@@ -47,9 +47,12 @@ def make_iap_request(url, client_id, method='GET', **kwargs):
     # Authorization header containing "Bearer " followed by a
     # Google-issued OpenID Connect token for the service account.
     resp = requests.request(
-        method, url,
-        headers={'Authorization': 'Bearer {}'.format(
-            open_id_connect_token)}, **kwargs)
+        method,
+        url,
+        headers={'Authorization': f'Bearer {open_id_connect_token}'},
+        **kwargs,
+    )
+
     if resp.status_code == 403:
         raise Exception('Service account does not have permission to '
                         'access the IAP-protected application.')

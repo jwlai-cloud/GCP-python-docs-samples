@@ -25,9 +25,9 @@ cloud_region = "us-central1"
 project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
 service_account_json = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
 
-dataset_id = "test_dataset_{}".format(uuid.uuid4())
-fhir_store_id = "test_fhir_store-{}".format(uuid.uuid4())
-test_fhir_store_id = "test_fhir_store-{}".format(uuid.uuid4())
+dataset_id = f"test_dataset_{uuid.uuid4()}"
+fhir_store_id = f"test_fhir_store-{uuid.uuid4()}"
+test_fhir_store_id = f"test_fhir_store-{uuid.uuid4()}"
 
 client = fhir_stores.get_client(service_account_json)
 
@@ -72,11 +72,13 @@ def test_dataset():
 
 @pytest.fixture(scope="module")
 def test_fhir_store():
-    resp = fhir_stores.create_fhir_store(
-        service_account_json, project_id, cloud_region, dataset_id, test_fhir_store_id
+    yield fhir_stores.create_fhir_store(
+        service_account_json,
+        project_id,
+        cloud_region,
+        dataset_id,
+        test_fhir_store_id,
     )
-
-    yield resp
 
     fhir_stores.delete_fhir_store(
         service_account_json, project_id, cloud_region, dataset_id, test_fhir_store_id

@@ -64,7 +64,7 @@ def upload_photo():
     vision_client = vision.ImageAnnotatorClient()
 
     # Use the Cloud Vision client to detect a face for our image.
-    source_uri = "gs://{}/{}".format(CLOUD_STORAGE_BUCKET, blob.name)
+    source_uri = f"gs://{CLOUD_STORAGE_BUCKET}/{blob.name}"
     image = vision.Image(source=vision.ImageSource(gcs_image_uri=source_uri))
     faces = vision_client.face_detection(image=image).face_annotations
 

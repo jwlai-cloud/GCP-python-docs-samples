@@ -20,13 +20,13 @@ import cloudiot_pubsub_example_server as example_server
 
 cloud_region = 'us-central1'
 device_id_template = 'test-device-{}'
-topic_id = 'test-device-events-topic-{}'.format(int(time.time()))
+topic_id = f'test-device-events-topic-{int(time.time())}'
 
 project_id = os.environ['GOOGLE_CLOUD_PROJECT']
 service_account_json = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
 
-pubsub_topic = 'projects/{}/topics/{}'.format(project_id, topic_id)
-registry_id = 'test-registry-{}-{}'.format(uuid.uuid4().hex, int(time.time()))
+pubsub_topic = f'projects/{project_id}/topics/{topic_id}'
+registry_id = f'test-registry-{uuid.uuid4().hex}-{int(time.time())}'
 
 
 def test_config_turn_on(capsys):

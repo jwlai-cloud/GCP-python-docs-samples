@@ -31,7 +31,7 @@ def custom_metric_descriptor(capsys):
     snippets.create_metric_descriptor(PROJECT_ID)
     out, _ = capsys.readouterr()
     match = re.search(r"Created (.*)\.", out)
-    metric_name = match.group(1)
+    metric_name = match[1]
     yield metric_name
 
     # teardown

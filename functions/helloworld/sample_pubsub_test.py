@@ -46,5 +46,5 @@ def test_print_name(capsys):
     # Call tested function
     main.hello_pubsub(data, mock_context)
     out, err = capsys.readouterr()
-    assert 'Hello {}!\n'.format(name) in out
+    assert f'Hello {name}!\n' in out
 # [END functions_pubsub_unit_test]

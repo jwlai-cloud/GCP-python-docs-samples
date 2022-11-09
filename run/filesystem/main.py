@@ -34,7 +34,7 @@ def index(path):
     Writes a new file on each request
     """
     # Redirect to mount path
-    path = '/' + path
+    path = f'/{path}'
     if (not path.startswith(mnt_dir)):
         return redirect(mnt_dir)
 

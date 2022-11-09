@@ -31,9 +31,7 @@ def send_command(sock, message):
 
     # Receive response
     print('Waiting for response.....')
-    response = sock.recv(BUFF_SIZE)
-
-    return response
+    return sock.recv(BUFF_SIZE)
 
 
 def make_message(device_id, action, data=''):
@@ -48,10 +46,10 @@ def run_action(device_id, action, data=''):
     message = make_message(device_id, action, data)
     if not message:
         return
-    print('Send message: {}'.format(message))
+    print(f'Send message: {message}')
 
     event_response = send_command(client_sock, message).decode('utf-8')
-    print('Received response: {}'.format(event_response))
+    print(f'Received response: {event_response}')
 
 
 def main():
@@ -59,7 +57,7 @@ def main():
     if not device_id:
         sys.exit('The device id must be specified.')
 
-    print('Bringing up device {}'.format(device_id))
+    print(f'Bringing up device {device_id}')
     try:
         run_action(device_id, 'detach')
         run_action(device_id, 'attach')

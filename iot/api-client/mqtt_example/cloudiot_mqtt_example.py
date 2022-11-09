@@ -77,10 +77,9 @@ def create_jwt(project_id, private_key_file, algorithm):
         private_key = f.read()
 
     print(
-        "Creating JWT using {} from private key file {}".format(
-            algorithm, private_key_file
-        )
+        f"Creating JWT using {algorithm} from private key file {private_key_file}"
     )
+
 
     return jwt.encode(token, private_key, algorithm=algorithm)
 
@@ -91,7 +90,7 @@ def create_jwt(project_id, private_key_file, algorithm):
 # [START iot_mqtt_config]
 def error_str(rc):
     """Convert a Paho error to a human readable string."""
-    return "{}: {}".format(rc, mqtt.error_string(rc))
+    return f"{rc}: {mqtt.error_string(rc)}"
 
 
 def on_connect(unused_client, unused_userdata, unused_flags, rc):
@@ -124,9 +123,7 @@ def on_message(unused_client, unused_userdata, message):
     """Callback when the device receives a message on a subscription."""
     payload = str(message.payload.decode("utf-8"))
     print(
-        "Received message '{}' on topic '{}' with Qos {}".format(
-            payload, message.topic, str(message.qos)
-        )
+        f"Received message '{payload}' on topic '{message.topic}' with Qos {str(message.qos)}"
     )
 
 
@@ -143,10 +140,9 @@ def get_client(
 ):
     """Create our MQTT client. The client_id is a unique string that identifies
     this device. For Google Cloud IoT Core, it must be in the format below."""
-    client_id = "projects/{}/locations/{}/registries/{}/devices/{}".format(
-        project_id, cloud_region, registry_id, device_id
-    )
-    print("Device client_id is '{}'".format(client_id))
+    client_id = f"projects/{project_id}/locations/{cloud_region}/registries/{registry_id}/devices/{device_id}"
+
+    print(f"Device client_id is '{client_id}'")
 
     client = mqtt.Client(client_id=client_id)
 
@@ -171,16 +167,16 @@ def get_client(
     client.connect(mqtt_bridge_hostname, mqtt_bridge_port)
 
     # This is the topic that the device will receive configuration updates on.
-    mqtt_config_topic = "/devices/{}/config".format(device_id)
+    mqtt_config_topic = f"/devices/{device_id}/config"
 
     # Subscribe to the config topic.
     client.subscribe(mqtt_config_topic, qos=1)
 
     # The topic that the device will receive commands on.
-    mqtt_command_topic = "/devices/{}/commands/#".format(device_id)
+    mqtt_command_topic = f"/devices/{device_id}/commands/#"
 
     # Subscribe to the commands topic, QoS 1 enables message acknowledgement.
-    print("Subscribing to {}".format(mqtt_command_topic))
+    print(f"Subscribing to {mqtt_command_topic}")
     client.subscribe(mqtt_command_topic, qos=0)
 
     return client
@@ -192,8 +188,8 @@ def get_client(
 def detach_device(client, device_id):
     """Detach the device from the gateway."""
     # [START iot_detach_device]
-    detach_topic = "/devices/{}/detach".format(device_id)
-    print("Detaching: {}".format(detach_topic))
+    detach_topic = f"/devices/{device_id}/detach"
+    print(f"Detaching: {detach_topic}")
     client.publish(detach_topic, "{}", qos=1)
     # [END iot_detach_device]
 
@@ -201,7 +197,7 @@ def detach_device(client, device_id):
 def attach_device(client, device_id, auth):
     """Attach the device to the gateway."""
     # [START iot_attach_device]
-    attach_topic = "/devices/{}/attach".format(device_id)
+    attach_topic = f"/devices/{device_id}/attach"
     attach_payload = '{{"authorization" : "{}"}}'.format(auth)
     client.publish(attach_topic, attach_payload, qos=1)
     # [END iot_attach_device]
@@ -248,19 +244,19 @@ def listen_for_messages(
     time.sleep(5)
 
     # The topic devices receive configuration updates on.
-    device_config_topic = "/devices/{}/config".format(device_id)
+    device_config_topic = f"/devices/{device_id}/config"
     client.subscribe(device_config_topic, qos=1)
 
     # The topic gateways receive configuration updates on.
-    gateway_config_topic = "/devices/{}/config".format(gateway_id)
+    gateway_config_topic = f"/devices/{gateway_id}/config"
     client.subscribe(gateway_config_topic, qos=1)
 
     # The topic gateways receive error updates on. QoS must be 0.
-    error_topic = "/devices/{}/errors".format(gateway_id)
+    error_topic = f"/devices/{gateway_id}/errors"
     client.subscribe(error_topic, qos=0)
 
     # Wait for about a minute for config messages.
-    for i in range(1, duration):
+    for _ in range(1, duration):
         client.loop()
         if cb is not None:
             cb(client)
@@ -278,7 +274,7 @@ def listen_for_messages(
 
         seconds_since_issue = (datetime.datetime.now(tz=datetime.timezone.utc) - jwt_iat).seconds
         if seconds_since_issue > 60 * jwt_exp_mins:
-            print("Refreshing token after {}s".format(seconds_since_issue))
+            print(f"Refreshing token after {seconds_since_issue}s")
             jwt_iat = datetime.datetime.now(tz=datetime.timezone.utc)
             client.loop()
             client.disconnect()
@@ -323,8 +319,8 @@ def send_data_from_bound_device(
     global minimum_backoff_time
 
     # Publish device events and gateway state.
-    device_topic = "/devices/{}/{}".format(device_id, "state")
-    gateway_topic = "/devices/{}/{}".format(gateway_id, "state")
+    device_topic = f"/devices/{device_id}/state"
+    gateway_topic = f"/devices/{gateway_id}/state"
 
     jwt_iat = datetime.datetime.now(tz=datetime.timezone.utc)
     jwt_exp_mins = jwt_expires_minutes
@@ -346,7 +342,7 @@ def send_data_from_bound_device(
     time.sleep(5)
 
     # Publish state to gateway topic
-    gateway_state = "Starting gateway at: {}".format(time.time())
+    gateway_state = f"Starting gateway at: {time.time()}"
     print(gateway_state)
     client.publish(gateway_topic, gateway_state)
 
@@ -365,14 +361,10 @@ def send_data_from_bound_device(
             minimum_backoff_time *= 2
             client.connect(mqtt_bridge_hostname, mqtt_bridge_port)
 
-        payload = "{}/{}-{}-payload-{}".format(registry_id, gateway_id, device_id, i)
+        payload = f"{registry_id}/{gateway_id}-{device_id}-payload-{i}"
 
-        print(
-            "Publishing message {}/{}: '{}' to {}".format(
-                i, num_messages, payload, device_topic
-            )
-        )
-        client.publish(device_topic, "{} : {}".format(device_id, payload))
+        print(f"Publishing message {i}/{num_messages}: '{payload}' to {device_topic}")
+        client.publish(device_topic, f"{device_id} : {payload}")
 
         seconds_since_issue = (datetime.datetime.now(tz=datetime.timezone.utc) - jwt_iat).seconds
         if seconds_since_issue > 60 * jwt_exp_mins:
@@ -498,7 +490,7 @@ def mqtt_device_demo(args):
     # Publish to the events or state topic based on the flag.
     sub_topic = "events" if args.message_type == "event" else "state"
 
-    mqtt_topic = "/devices/{}/{}".format(args.device_id, sub_topic)
+    mqtt_topic = f"/devices/{args.device_id}/{sub_topic}"
 
     jwt_iat = datetime.datetime.now(tz=datetime.timezone.utc)
     jwt_exp_mins = args.jwt_expires_minutes
@@ -528,17 +520,17 @@ def mqtt_device_demo(args):
 
             # Otherwise, wait and connect again.
             delay = minimum_backoff_time + random.randint(0, 1000) / 1000.0
-            print("Waiting for {} before reconnecting.".format(delay))
+            print(f"Waiting for {delay} before reconnecting.")
             time.sleep(delay)
             minimum_backoff_time *= 2
             client.connect(args.mqtt_bridge_hostname, args.mqtt_bridge_port)
 
-        payload = "{}/{}-payload-{}".format(args.registry_id, args.device_id, i)
-        print("Publishing message {}/{}: '{}'".format(i, args.num_messages, payload))
+        payload = f"{args.registry_id}/{args.device_id}-payload-{i}"
+        print(f"Publishing message {i}/{args.num_messages}: '{payload}'")
         # [START iot_mqtt_jwt_refresh]
         seconds_since_issue = (datetime.datetime.now(tz=datetime.timezone.utc) - jwt_iat).seconds
         if seconds_since_issue > 60 * jwt_exp_mins:
-            print("Refreshing token after {}s".format(seconds_since_issue))
+            print(f"Refreshing token after {seconds_since_issue}s")
             jwt_iat = datetime.datetime.now(tz=datetime.timezone.utc)
             client.loop()
             client.disconnect()
@@ -560,7 +552,7 @@ def mqtt_device_demo(args):
         client.publish(mqtt_topic, payload, qos=1)
 
         # Send events every second. State should not be updated as often
-        for i in range(0, 60):
+        for _ in range(60):
             time.sleep(1)
             client.loop()
     # [END iot_mqtt_run]
@@ -569,10 +561,13 @@ def mqtt_device_demo(args):
 def main():
     args = parse_command_line_args()
 
-    if args.command and args.command.startswith("gateway"):
-        if args.gateway_id is None:
-            print("Error: For gateway commands you must specify a gateway ID")
-            return
+    if (
+        args.command
+        and args.command.startswith("gateway")
+        and args.gateway_id is None
+    ):
+        print("Error: For gateway commands you must specify a gateway ID")
+        return
 
     if args.command == "gateway_listen":
         listen_for_messages(

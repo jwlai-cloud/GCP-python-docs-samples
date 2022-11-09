@@ -43,10 +43,11 @@ def create_hl7v2_message(
     # dataset_id = 'my-dataset'  # replace with the HL7v2 store's parent dataset ID
     # hl7v2_store_id = 'my-hl7v2-store'  # replace with the HL7v2 store's ID
     # hl7v2_message_file = 'hl7v2-message.json'  # replace with the path to the HL7v2 file
-    hl7v2_parent = "projects/{}/locations/{}".format(project_id, location)
-    hl7v2_store_name = "{}/datasets/{}/hl7V2Stores/{}".format(
-        hl7v2_parent, dataset_id, hl7v2_store_id
+    hl7v2_parent = f"projects/{project_id}/locations/{location}"
+    hl7v2_store_name = (
+        f"{hl7v2_parent}/datasets/{dataset_id}/hl7V2Stores/{hl7v2_store_id}"
     )
+
 
     with open(hl7v2_message_file) as hl7v2_message:
         hl7v2_message_content = json.load(hl7v2_message)
@@ -61,7 +62,7 @@ def create_hl7v2_message(
     )
 
     response = request.execute()
-    print("Created HL7v2 message from file: {}".format(hl7v2_message_file))
+    print(f"Created HL7v2 message from file: {hl7v2_message_file}")
     return response
 
 
@@ -91,10 +92,9 @@ def delete_hl7v2_message(
     # dataset_id = 'my-dataset'  # replace with the HL7v2 store's parent dataset ID
     # hl7v2_store_id = 'my-hl7v2-store'  # replace with the HL7v2 store's ID
     # hl7v2_message_id = '2yqbdhYHlk_ucSmWkcKOVm_N0p0OpBXgIlVG18rB-cw='  # replace with the HL7v2 message ID that was returned by the server
-    hl7v2_parent = "projects/{}/locations/{}".format(project_id, location)
-    hl7v2_message = "{}/datasets/{}/hl7V2Stores/{}/messages/{}".format(
-        hl7v2_parent, dataset_id, hl7v2_store_id, hl7v2_message_id
-    )
+    hl7v2_parent = f"projects/{project_id}/locations/{location}"
+    hl7v2_message = f"{hl7v2_parent}/datasets/{dataset_id}/hl7V2Stores/{hl7v2_store_id}/messages/{hl7v2_message_id}"
+
 
     request = (
         client.projects()
@@ -106,7 +106,7 @@ def delete_hl7v2_message(
     )
 
     response = request.execute()
-    print("Deleted HL7v2 message with ID: {}".format(hl7v2_message_id))
+    print(f"Deleted HL7v2 message with ID: {hl7v2_message_id}")
     return response
 
 
@@ -136,26 +136,25 @@ def get_hl7v2_message(
     # dataset_id = 'my-dataset'  # replace with the HL7v2 store's parent dataset ID
     # hl7v2_store_id = 'my-hl7v2-store'  # replace with the HL7v2 store's ID
     # hl7v2_message_id = '2yqbdhYHlk_ucSmWkcKOVm_N0p0OpBXgIlVG18rB-cw='  # replace with the HL7v2 message ID that was returned by the server
-    hl7v2_parent = "projects/{}/locations/{}".format(project_id, location)
-    hl7v2_message_name = "{}/datasets/{}/hl7V2Stores/{}/messages/{}".format(
-        hl7v2_parent, dataset_id, hl7v2_store_id, hl7v2_message_id
-    )
+    hl7v2_parent = f"projects/{project_id}/locations/{location}"
+    hl7v2_message_name = f"{hl7v2_parent}/datasets/{dataset_id}/hl7V2Stores/{hl7v2_store_id}/messages/{hl7v2_message_id}"
+
 
     msgs = client.projects().locations().datasets().hl7V2Stores().messages()
     message = msgs.get(name=hl7v2_message_name).execute()
 
-    print("Name: {}".format(message.get("name")))
-    print("Data: {}".format(message.get("data")))
-    print("Creation time: {}".format(message.get("createTime")))
-    print("Sending facility: {}".format(message.get("sendFacility")))
-    print("Time sent: {}".format(message.get("sendTime")))
-    print("Message type: {}".format(message.get("messageType")))
+    print(f'Name: {message.get("name")}')
+    print(f'Data: {message.get("data")}')
+    print(f'Creation time: {message.get("createTime")}')
+    print(f'Sending facility: {message.get("sendFacility")}')
+    print(f'Time sent: {message.get("sendTime")}')
+    print(f'Message type: {message.get("messageType")}')
     print("Patient IDs:")
     patient_ids = message.get("patientIds")
     for patient_id in patient_ids:
-        print("\tPatient value: {}".format(patient_id.get("value")))
-        print("\tPatient type: {}".format(patient_id.get("type")))
-    print("Labels: {}".format(message.get("labels")))
+        print(f'\tPatient value: {patient_id.get("value")}')
+        print(f'\tPatient type: {patient_id.get("type")}')
+    print(f'Labels: {message.get("labels")}')
 
     print(message)
     return message
@@ -192,10 +191,11 @@ def ingest_hl7v2_message(
     # dataset_id = 'my-dataset'  # replace with the HL7v2 store's parent dataset ID
     # hl7v2_store_id = 'my-hl7v2-store'  # replace with the HL7v2 store's ID
     # hl7v2_message_file = 'hl7v2-message.json'  # replace with the path to the HL7v2 file
-    hl7v2_parent = "projects/{}/locations/{}".format(project_id, location)
-    hl7v2_store_name = "{}/datasets/{}/hl7V2Stores/{}".format(
-        hl7v2_parent, dataset_id, hl7v2_store_id
+    hl7v2_parent = f"projects/{project_id}/locations/{location}"
+    hl7v2_store_name = (
+        f"{hl7v2_parent}/datasets/{dataset_id}/hl7V2Stores/{hl7v2_store_id}"
     )
+
 
     with open(hl7v2_message_file) as hl7v2_message:
         hl7v2_message_content = json.load(hl7v2_message)
@@ -210,7 +210,7 @@ def ingest_hl7v2_message(
     )
 
     response = request.execute()
-    print("Ingested HL7v2 message from file: {}".format(hl7v2_message_file))
+    print(f"Ingested HL7v2 message from file: {hl7v2_message_file}")
     return response
 
 
@@ -238,12 +238,11 @@ def list_hl7v2_messages(project_id, location, dataset_id, hl7v2_store_id):
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the HL7v2 store's parent dataset ID
     # hl7v2_store_id = 'my-hl7v2-store'  # replace with the HL7v2 store's ID
-    hl7v2_messages_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    hl7v2_messages_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    hl7v2_message_path = "{}/hl7V2Stores/{}".format(
-        hl7v2_messages_parent, hl7v2_store_id
-    )
+
+    hl7v2_message_path = f"{hl7v2_messages_parent}/hl7V2Stores/{hl7v2_store_id}"
 
     hl7v2_messages = (
         client.projects()
@@ -296,10 +295,9 @@ def patch_hl7v2_message(
     # hl7v2_message_id = '2yqbdhYHlk_ucSmWkcKOVm_N0p0OpBXgIlVG18rB-cw='  # replace with the HL7v2 message ID that was returned by the server
     # label_key = 'key1'  # replace with a key
     # label_value = 'label2'  # replace with a key value
-    hl7v2_message_parent = "projects/{}/locations/{}".format(project_id, location)
-    hl7v2_message_name = "{}/datasets/{}/hl7V2Stores/{}/messages/{}".format(
-        hl7v2_message_parent, dataset_id, hl7v2_store_id, hl7v2_message_id
-    )
+    hl7v2_message_parent = f"projects/{project_id}/locations/{location}"
+    hl7v2_message_name = f"{hl7v2_message_parent}/datasets/{dataset_id}/hl7V2Stores/{hl7v2_store_id}/messages/{hl7v2_message_id}"
+
 
     patch = {"labels": {label_key: label_value}}
 
@@ -314,10 +312,9 @@ def patch_hl7v2_message(
 
     response = request.execute()
     print(
-        "Patched HL7v2 message {} with labels:\n\t{}: {}".format(
-            hl7v2_message_id, label_key, label_value
-        )
+        f"Patched HL7v2 message {hl7v2_message_id} with labels:\n\t{label_key}: {label_value}"
     )
+
     return response
 
 

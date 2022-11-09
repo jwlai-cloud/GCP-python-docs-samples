@@ -28,7 +28,7 @@ from google.cloud.logging_v2.services.logging_service_v2 import LoggingServiceV2
 import pytest
 
 
-SUFFIX = uuid.uuid4().hex[0:6]
+SUFFIX = uuid.uuid4().hex[:6]
 PROJECT = os.environ["GOOGLE_CLOUD_PROJECT"]
 CLOUD_RUN_SERVICE = f"pubsub-test-{SUFFIX}"
 TOPIC = f"pubsub-test_{SUFFIX}"
@@ -207,7 +207,7 @@ def test_end_to_end(pubsub_topic):
 
     # Retry a maximum number of 10 times to find results in stackdriver
     found = False
-    for x in range(10):
+    for _ in range(10):
         iterator = client.list_log_entries({"resource_names": resource_names, "filter": filters})
         for entry in iterator:
             if entry.text_payload == "Hello Runner!":

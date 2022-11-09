@@ -81,8 +81,9 @@ def test_image_recv(
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         cloudiot_mqtt_image.receive_image(
-            project_id, test_subscription.name, tmp_dir + "/test", "png", 120
+            project_id, test_subscription.name, f"{tmp_dir}/test", "png", 120
         )
+
 
     out, _ = capsys.readouterr()
     assert "Received image" in out

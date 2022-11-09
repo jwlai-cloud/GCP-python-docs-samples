@@ -120,7 +120,7 @@ def deployed_service() -> str:
         + substitutions
     )
 
-    service_url = (
+    yield (
         subprocess.run(
             [
                 "gcloud",
@@ -143,8 +143,6 @@ def deployed_service() -> str:
         .stdout.strip()
         .decode()
     )
-
-    yield service_url
 
     # Cleanup
 
@@ -189,8 +187,7 @@ def jwt_token() -> str:
     assert "error" not in response.keys()
     assert "idToken" in response.keys()
 
-    id_token = response["idToken"]
-    yield id_token
+    yield response["idToken"]
 
     # no cleanup required
 

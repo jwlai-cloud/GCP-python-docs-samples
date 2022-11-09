@@ -57,7 +57,7 @@ def get_client(service_account_json):
     )
     scoped_credentials = credentials.with_scopes(api_scopes)
 
-    discovery_url = "{}?version={}".format(discovery_api, api_version)
+    discovery_url = f"{discovery_api}?version={api_version}"
 
     return discovery.build(
         service_name,
@@ -73,12 +73,11 @@ def create_bucket(bucket_name):
 
     try:
         storage_client.create_bucket(bucket_name)
-        print("Bucket {} created".format(bucket_name))
+        print(f"Bucket {bucket_name} created")
     except BaseException:
         # If the bucket already exists, ignore the 409 HTTP error and
         # continue with the rest of the program.
-        print("Bucket {} already exists.".format(bucket_name))
-        pass
+        print(f"Bucket {bucket_name} already exists.")
 
 
 def upload_local_file(bucket_name, gcs_file_name, source_file_name):
@@ -89,7 +88,7 @@ def upload_local_file(bucket_name, gcs_file_name, source_file_name):
 
     config.upload_from_filename(source_file_name)
 
-    print("File {} uploaded as {}.".format(source_file_name, gcs_file_name))
+    print(f"File {source_file_name} uploaded as {gcs_file_name}.")
 
 
 def make_file_public(bucket_name, gcs_file_name):
@@ -100,7 +99,7 @@ def make_file_public(bucket_name, gcs_file_name):
 
     config.make_public()
 
-    print("File {} is publicly accessible at {}".format(config.name, config.public_url))
+    print(f"File {config.name} is publicly accessible at {config.public_url}")
 
 
 def send_to_device(
@@ -117,9 +116,8 @@ def send_to_device(
 
     client = get_client(service_account_json)
 
-    device_name = "projects/{}/locations/{}/registries/{}/devices/{}".format(
-        project_id, cloud_region, registry_id, device_id
-    )
+    device_name = f"projects/{project_id}/locations/{cloud_region}/registries/{registry_id}/devices/{device_id}"
+
 
     config_data = {
         "bucket_name": bucket_name,
@@ -153,12 +151,12 @@ def send_to_device(
 
     try:
         request.execute()
-        print("Successfully sent file to device: {}".format(device_id))
+        print(f"Successfully sent file to device: {device_id}")
     except HttpError as e:
         # If the server responds with an HtppError, most likely because
         # the config version sent differs from the version on the
         # device, log it here.
-        print("Error executing ModifyCloudToDeviceConfig: {}".format(e))
+        print(f"Error executing ModifyCloudToDeviceConfig: {e}")
 
 
 def get_state(service_account_json, project_id, cloud_region, registry_id, device_id):
@@ -166,18 +164,17 @@ def get_state(service_account_json, project_id, cloud_region, registry_id, devic
     print("Getting device information.")
     client = get_client(service_account_json)
 
-    device_name = "projects/{}/locations/{}/registries/{}/devices/{}".format(
-        project_id, cloud_region, registry_id, device_id
-    )
+    device_name = f"projects/{project_id}/locations/{cloud_region}/registries/{registry_id}/devices/{device_id}"
+
 
     devices = client.projects().locations().registries().devices()
     device = devices.get(name=device_name).execute()
 
-    print("Id : {}".format(device.get("id")))
+    print(f'Id : {device.get("id")}')
     print("Config:")
-    print("\tdata: {}".format(device.get("config").get("data")))
-    print("\tfirmware_version: {}".format(device.get("config").get("version")))
-    print("\tcloudUpdateTime: {}".format(device.get("config").get("cloudUpdateTime")))
+    print(f'\tdata: {device.get("config").get("data")}')
+    print(f'\tfirmware_version: {device.get("config").get("version")}')
+    print(f'\tcloudUpdateTime: {device.get("config").get("cloudUpdateTime")}')
 
 
 def parse_command_line_args():
@@ -236,16 +233,15 @@ def main():
     args = parse_command_line_args()
 
     print(
-        "Checking if bucket {} exists and creating it if doesn't...".format(
-            args.bucket_name
-        )
+        f"Checking if bucket {args.bucket_name} exists and creating it if doesn't..."
     )
+
     create_bucket(args.bucket_name)
 
     print(
-        "Uploading file '{}' to bucket "
-        "'{}'...".format(args.source_file_name, args.bucket_name)
+        f"Uploading file '{args.source_file_name}' to bucket '{args.bucket_name}'..."
     )
+
 
     upload_local_file(args.bucket_name, args.gcs_file_name, args.source_file_name)
 

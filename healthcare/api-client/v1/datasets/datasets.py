@@ -35,7 +35,7 @@ def create_dataset(project_id, location, dataset_id):
     # project_id = 'my-project'  # replace with your GCP project ID
     # location = 'us-central1'  # replace with the dataset's location
     # dataset_id = 'my-dataset'  # replace with your dataset ID
-    dataset_parent = "projects/{}/locations/{}".format(project_id, location)
+    dataset_parent = f"projects/{project_id}/locations/{location}"
 
     request = (
         client.projects()
@@ -45,7 +45,7 @@ def create_dataset(project_id, location, dataset_id):
     )
 
     response = request.execute()
-    print("Created dataset: {}".format(dataset_id))
+    print(f"Created dataset: {dataset_id}")
     return response
 
 
@@ -71,14 +71,15 @@ def delete_dataset(project_id, location, dataset_id):
     # project_id = 'my-project'  # replace with your GCP project ID
     # location = 'us-central1'  # replace with the dataset's location
     # dataset_id = 'my-dataset'  # replace with your dataset ID
-    dataset_name = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    dataset_name = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
+
 
     request = client.projects().locations().datasets().delete(name=dataset_name)
 
     response = request.execute()
-    print("Deleted dataset: {}".format(dataset_id))
+    print(f"Deleted dataset: {dataset_id}")
     return response
 
 
@@ -104,15 +105,16 @@ def get_dataset(project_id, location, dataset_id):
     # project_id = 'my-project'  # replace with your GCP project ID
     # location = 'us-central1'  # replace with the dataset's location
     # dataset_id = 'my-dataset'  # replace with your dataset ID
-    dataset_name = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    dataset_name = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
+
 
     datasets = client.projects().locations().datasets()
     dataset = datasets.get(name=dataset_name).execute()
 
-    print("Name: {}".format(dataset.get("name")))
-    print("Time zone: {}".format(dataset.get("timeZone")))
+    print(f'Name: {dataset.get("name")}')
+    print(f'Time zone: {dataset.get("timeZone")}')
 
     return dataset
 
@@ -138,7 +140,7 @@ def list_datasets(project_id, location):
     # TODO(developer): Uncomment these lines and replace with your values.
     # project_id = 'my-project'  # replace with your GCP project ID
     # location = 'us-central1'  # replace with the location of the datasets
-    dataset_parent = "projects/{}/locations/{}".format(project_id, location)
+    dataset_parent = f"projects/{project_id}/locations/{location}"
 
     datasets = (
         client.projects()
@@ -150,11 +152,7 @@ def list_datasets(project_id, location):
     )
 
     for dataset in datasets:
-        print(
-            "Dataset: {}\nTime zone: {}".format(
-                dataset.get("name"), dataset.get("timeZone")
-            )
-        )
+        print(f'Dataset: {dataset.get("name")}\nTime zone: {dataset.get("timeZone")}')
 
     return datasets
 
@@ -182,8 +180,8 @@ def patch_dataset(project_id, location, dataset_id, time_zone):
     # location = 'us-central1'  # replace with the dataset's location
     # dataset_id = 'my-dataset'  # replace with your dataset ID
     # time_zone = 'GMT'  # replace with the dataset's time zone
-    dataset_parent = "projects/{}/locations/{}".format(project_id, location)
-    dataset_name = "{}/datasets/{}".format(dataset_parent, dataset_id)
+    dataset_parent = f"projects/{project_id}/locations/{location}"
+    dataset_name = f"{dataset_parent}/datasets/{dataset_id}"
 
     # Sets the time zone
     patch = {"timeZone": time_zone}
@@ -196,7 +194,7 @@ def patch_dataset(project_id, location, dataset_id, time_zone):
     )
 
     response = request.execute()
-    print("Patched dataset {} with time zone: {}".format(dataset_id, time_zone))
+    print(f"Patched dataset {dataset_id} with time zone: {time_zone}")
     return response
 
 
@@ -224,12 +222,12 @@ def deidentify_dataset(project_id, location, dataset_id, destination_dataset_id)
     # location = 'us-central1'  # replace with the dataset's location
     # dataset_id = 'my-source-dataset'  # replace with the source dataset's ID
     # destination_dataset_id = 'my-destination-dataset'  # replace with the destination dataset's ID
-    source_dataset = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    source_dataset = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    destination_dataset = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, destination_dataset_id
-    )
+
+    destination_dataset = f"projects/{project_id}/locations/{location}/datasets/{destination_dataset_id}"
+
 
     body = {
         "destinationDataset": destination_dataset,
@@ -269,9 +267,9 @@ def deidentify_dataset(project_id, location, dataset_id, destination_dataset_id)
 
     response = request.execute()
     print(
-        "Data in dataset {} de-identified."
-        "De-identified data written to {}".format(dataset_id, destination_dataset_id)
+        f"Data in dataset {dataset_id} de-identified.De-identified data written to {destination_dataset_id}"
     )
+
     return response
 
 
@@ -297,16 +295,17 @@ def get_dataset_iam_policy(project_id, location, dataset_id):
     # project_id = 'my-project'  # replace with your GCP project ID
     # location = 'us-central1'  # replace with the dataset's location
     # dataset_id = 'my-dataset'  # replace with your dataset ID
-    dataset_name = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    dataset_name = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
+
 
     request = (
         client.projects().locations().datasets().getIamPolicy(resource=dataset_name)
     )
     response = request.execute()
 
-    print("etag: {}".format(response.get("name")))
+    print(f'etag: {response.get("name")}')
     return response
 
 
@@ -346,9 +345,10 @@ def set_dataset_iam_policy(project_id, location, dataset_id, member, role, etag=
     # project_id = 'my-project'  # replace with your GCP project ID
     # location = 'us-central1'  # replace with the dataset's location
     # dataset_id = 'my-dataset'  # replace with your dataset ID
-    dataset_name = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    dataset_name = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
+
 
     policy = {"bindings": [{"role": role, "members": [member]}]}
 
@@ -363,8 +363,8 @@ def set_dataset_iam_policy(project_id, location, dataset_id, member, role, etag=
     )
     response = request.execute()
 
-    print("etag: {}".format(response.get("name")))
-    print("bindings: {}".format(response.get("bindings")))
+    print(f'etag: {response.get("name")}')
+    print(f'bindings: {response.get("bindings")}')
     return response
 
 

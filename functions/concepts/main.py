@@ -37,7 +37,7 @@ def statelessness(request):
 
     # Note: the total function invocation count across
     # all instances may not be equal to this value!
-    return 'Instance execution count: {}'.format(count)
+    return f'Instance execution count: {count}'
 # [END functions_concepts_stateless]
 
 
@@ -72,7 +72,7 @@ def scope_demo(request):
     # Per-function scope
     # This computation runs every time this function is called
     function_var = light_computation()
-    return 'Instance: {}; function: {}'.format(instance_var, function_var)
+    return f'Instance: {instance_var}; function: {function_var}'
 # [END functions_tips_scopes]
 
 
@@ -119,5 +119,5 @@ def list_files(request):
     root = path.dirname(path.abspath(__file__))
     children = os.listdir(root)
     files = [c for c in children if path.isfile(path.join(root, c))]
-    return 'Files: {}'.format(files)
+    return f'Files: {files}'
 # [END functions_concepts_filesystem]

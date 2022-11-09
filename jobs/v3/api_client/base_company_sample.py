@@ -44,7 +44,7 @@ def generate_company():
         'external_id': external_id,
         'headquarters_address': headquarters_address
     }
-    print('Company generated: %s' % company)
+    print(f'Company generated: {company}')
     return company
 # [END jobs_basic_company]
 
@@ -55,7 +55,7 @@ def create_company(client_service, company_to_be_created):
         request = {'company': company_to_be_created}
         company_created = client_service.projects().companies().create(
             parent=parent, body=request).execute()
-        print('Company created: %s' % company_created)
+        print(f'Company created: {company_created}')
         return company_created
     except Error as e:
         print('Got exception while creating company')
@@ -68,7 +68,7 @@ def get_company(client_service, company_name):
     try:
         company_existed = client_service.projects().companies().get(
             name=company_name).execute()
-        print('Company existed: %s' % company_existed)
+        print(f'Company existed: {company_existed}')
         return company_existed
     except Error as e:
         print('Got exception while getting company')
@@ -82,7 +82,7 @@ def update_company(client_service, company_name, company_to_be_updated):
         request = {'company': company_to_be_updated}
         company_updated = client_service.projects().companies().patch(
             name=company_name, body=request).execute()
-        print('Company updated: %s' % company_updated)
+        print(f'Company updated: {company_updated}')
         return company_updated
     except Error as e:
         print('Got exception while updating company')
@@ -101,7 +101,7 @@ def update_company_with_field_mask(client_service, company_name,
         company_updated = client_service.projects().companies().patch(
             name=company_name,
             body=request).execute()
-        print('Company updated: %s' % company_updated)
+        print(f'Company updated: {company_updated}')
         return company_updated
     except Error as e:
         print('Got exception while updating company with field mask')

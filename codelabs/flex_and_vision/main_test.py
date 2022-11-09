@@ -30,8 +30,7 @@ TEST_PHOTO_URL = (
 @pytest.fixture
 def app():
     main.app.testing = True
-    client = main.app.test_client()
-    return client
+    return main.app.test_client()
 
 
 def test_index(app):

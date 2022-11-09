@@ -29,7 +29,7 @@ import pytest
 # Unique suffix to create distinct service names
 SUFFIX = uuid.uuid4().hex[:10]
 PROJECT = os.environ["GOOGLE_CLOUD_PROJECT"]
-SERVICE = "job-quickstart-" + SUFFIX
+SERVICE = f"job-quickstart-{SUFFIX}"
 REGION = "us-west1"
 
 
@@ -46,9 +46,10 @@ def setup_job():
             "--project",
             PROJECT,
             "--substitutions",
-            "_SERVICE=" + SERVICE + ",_VERSION=" + SUFFIX + ",_REGION=" + REGION,
+            f"_SERVICE={SERVICE},_VERSION={SUFFIX},_REGION={REGION}",
         ]
     )
+
 
     yield SERVICE
 
@@ -63,7 +64,7 @@ def setup_job():
             "--project",
             PROJECT,
             "--substitutions",
-            "_SERVICE=" + SERVICE + ",_VERSION=" + SUFFIX + ",_REGION=" + REGION,
+            f"_SERVICE={SERVICE},_VERSION={SUFFIX},_REGION={REGION}",
         ]
     )
 

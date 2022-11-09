@@ -30,9 +30,10 @@ def spanner_read_data(request):
     with database.snapshot() as snapshot:
         results = snapshot.execute_sql(query)
 
-        for row in results:
-            output = 'SingerId: {}, AlbumId: {}, AlbumTitle: {}'.format(*row)
-            outputs.append(output)
+        outputs.extend(
+            'SingerId: {}, AlbumId: {}, AlbumTitle: {}'.format(*row)
+            for row in results
+        )
 
     return '\n'.join(outputs)
 # [END spanner_functions_quickstart]

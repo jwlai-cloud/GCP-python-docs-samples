@@ -30,14 +30,14 @@ import dicom_stores  # noqa
 location = "us-central1"
 project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
 
-dataset_id = "test_dataset-{}".format(uuid.uuid4())
-dicom_store_id = "test_dicom_store_{}".format(uuid.uuid4())
-pubsub_topic = "test_pubsub_topic_{}".format(uuid.uuid4())
+dataset_id = f"test_dataset-{uuid.uuid4()}"
+dicom_store_id = f"test_dicom_store_{uuid.uuid4()}"
+pubsub_topic = f"test_pubsub_topic_{uuid.uuid4()}"
 
 RESOURCES = os.path.join(os.path.dirname(__file__), "resources")
 bucket = os.environ["CLOUD_STORAGE_BUCKET"]
 dcm_file_name = "dicom_00000001_000.dcm"
-content_uri = bucket + "/" + dcm_file_name
+content_uri = f"{bucket}/{dcm_file_name}"
 dcm_file = os.path.join(RESOURCES, dcm_file_name)
 
 
@@ -112,7 +112,7 @@ def test_dicom_store():
             # The API returns 403 when the dataset doesn't exist, so
             # if we try to delete a DICOM store when the parent dataset
             # doesn't exist, the server will return a 403.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print(
                     "Got exception {} while deleting DICOM store".format(
                         err.resp.status
@@ -140,7 +140,7 @@ def crud_dicom_store_id():
             # The API returns 403 when the dataset doesn't exist, so
             # if we try to delete a DICOM store when the parent dataset
             # doesn't exist, the server will return a 403.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print(
                     "Got exception {} while deleting DICOM store".format(
                         err.resp.status

@@ -40,8 +40,8 @@ CLOUD_REGION = "us-west1"
 ZONE_ID = "a"
 BUCKET = os.environ["PUBSUBLITE_BUCKET_ID"]
 CLUSTER_ID = os.environ["PUBSUBLITE_CLUSTER_ID"] + "-" + UUID
-TOPIC_ID = "spark-streaming-topic-" + UUID
-SUBSCRIPTION_ID = "spark-streaming-subscription-" + UUID
+TOPIC_ID = f"spark-streaming-topic-{UUID}"
+SUBSCRIPTION_ID = f"spark-streaming-subscription-{UUID}"
 CURRENT_DIR = pathlib.Path(__file__).parent.resolve()
 
 
@@ -164,7 +164,7 @@ def pyfile(source_file: str) -> str:
     destination_blob_name = os.path.join(UUID, source_file)
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_filename(source_file)
-    return "gs://" + blob.bucket.name + "/" + blob.name
+    return f"gs://{blob.bucket.name}/{blob.name}"
 
 
 def test_spark_streaming_to_pubsublite(
@@ -201,9 +201,10 @@ def test_spark_streaming_to_pubsublite(
             "project_id": PROJECT_ID,
             "region": CLOUD_REGION,
             "job": job,
-            "request_id": "write-" + UUID,
+            "request_id": f"write-{UUID}",
         }
     )
+
     response = operation.result()
 
     # Dataproc job output gets saved to the Google Cloud Storage bucket
@@ -212,10 +213,11 @@ def test_spark_streaming_to_pubsublite(
 
     output = (
         storage.Client()
-        .get_bucket(matches.group(1))
-        .blob(f"{matches.group(2)}.000000000")
+        .get_bucket(matches[1])
+        .blob(f"{matches[2]}.000000000")
         .download_as_text()
     )
+
 
     assert "Committed 1 messages for epochId" in output
 
@@ -226,9 +228,10 @@ def test_spark_streaming_from_pubsublite(
     # Create a Dataproc job client.
     job_client = dataproc_v1.JobControllerClient(
         client_options={
-            "api_endpoint": "{}-dataproc.googleapis.com:443".format(CLOUD_REGION)
+            "api_endpoint": f"{CLOUD_REGION}-dataproc.googleapis.com:443"
         }
     )
+
 
     # Create the job config.
     job = {
@@ -258,9 +261,10 @@ def test_spark_streaming_from_pubsublite(
             "project_id": PROJECT_ID,
             "region": CLOUD_REGION,
             "job": job,
-            "request_id": "read-" + UUID,
+            "request_id": f"read-{UUID}",
         }
     )
+
     response = operation.result()
 
     # Dataproc job output gets saved to the Google Cloud Storage bucket
@@ -269,9 +273,10 @@ def test_spark_streaming_from_pubsublite(
 
     output = (
         storage.Client()
-        .get_bucket(matches.group(1))
-        .blob(f"{matches.group(2)}.000000000")
+        .get_bucket(matches[1])
+        .blob(f"{matches[2]}.000000000")
         .download_as_text()
     )
+
 
     assert "Batch: 0\n" in output

@@ -46,7 +46,7 @@ def hello_name(request):
         name = request_args["name"]
     else:
         name = "World"
-    return "Hello {}!".format(flask.escape(name))
+    return f"Hello {flask.escape(name)}!"
 
 
 def python_powered(request):

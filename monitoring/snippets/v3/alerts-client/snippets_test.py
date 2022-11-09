@@ -35,7 +35,7 @@ random.seed()
 
 
 def random_name(length):
-    return "".join([random.choice(string.ascii_lowercase) for i in range(length)])
+    return "".join([random.choice(string.ascii_lowercase) for _ in range(length)])
 
 
 def retry_on_exceptions(exception):
@@ -76,23 +76,23 @@ class PochanFixture:
 
     def __enter__(self):
         @retry(
-            wait_exponential_multiplier=1000,
-            wait_exponential_max=10000,
-            stop_max_attempt_number=10,
-            retry_on_exception=retry_on_exceptions,
-        )
+                wait_exponential_multiplier=1000,
+                wait_exponential_max=10000,
+                stop_max_attempt_number=10,
+                retry_on_exception=retry_on_exceptions,
+            )
         def setup():
             # Create a policy.
             json = open("test_alert_policy.json").read()
             policy = monitoring_v3.AlertPolicy.from_json(json)
-            policy.display_name = "snippets-test-" + random_name(10)
+            policy.display_name = f"snippets-test-{random_name(10)}"
             self.alert_policy = self.alert_policy_client.create_alert_policy(
                 name=self.project_name, alert_policy=policy
             )
             # Create a notification channel.
             json = open("test_notification_channel.json").read()
             notification_channel = monitoring_v3.NotificationChannel.from_json(json)
-            notification_channel.display_name = "snippets-test-" + random_name(10)
+            notification_channel.display_name = f"snippets-test-{random_name(10)}"
             self.notification_channel = (
                 self.notification_channel_client.create_notification_channel(
                     name=self.project_name, notification_channel=notification_channel
@@ -143,7 +143,7 @@ def test_list_alert_policies(capsys, pochan):
         out, _ = capsys.readouterr()
         if pochan.alert_policy.display_name in out:
             break
-        retry = retry - 1
+        retry -= 1
         time.sleep(10)
 
     assert retry > 0
@@ -157,19 +157,26 @@ def test_enable_alert_policies(capsys, pochan):
     # Having multiple projects will void these `sleep()` calls.
     # See also #3310
     time.sleep(2)
-    snippets.enable_alert_policies(pochan.project_name, True, "name='{}'".format(pochan.alert_policy.name))
+    snippets.enable_alert_policies(
+        pochan.project_name, True, f"name='{pochan.alert_policy.name}'"
+    )
+
     out, _ = capsys.readouterr()
     assert (
         "Enabled {0}".format(pochan.project_name) in out
-        or "{} is already enabled".format(pochan.alert_policy.name) in out
+        or f"{pochan.alert_policy.name} is already enabled" in out
     )
 
+
     time.sleep(2)
-    snippets.enable_alert_policies(pochan.project_name, False, "name='{}'".format(pochan.alert_policy.name))
+    snippets.enable_alert_policies(
+        pochan.project_name, False, f"name='{pochan.alert_policy.name}'"
+    )
+
     out, _ = capsys.readouterr()
     assert (
-        "Disabled {}".format(pochan.project_name) in out
-        or "{} is already disabled".format(pochan.alert_policy.name) in out
+        f"Disabled {pochan.project_name}" in out
+        or f"{pochan.alert_policy.name} is already disabled" in out
     )
 
 

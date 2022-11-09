@@ -29,7 +29,7 @@ CUSTOM_ROLE_DESCRIPTION = "This is a python test custom role"
 CUSTOM_ROLE_PERMISSIONS = ["iam.roles.get"]
 CUSTOM_ROLE_STAGE = "GA"
 CUSTOM_ROLE_EMAIL = (
-    CUSTOM_ROLE_NAME + "@" + GCLOUD_PROJECT + ".iam.gserviceaccount.com"
+    f"{CUSTOM_ROLE_NAME}@{GCLOUD_PROJECT}.iam.gserviceaccount.com"
 )
 
 
@@ -49,14 +49,14 @@ def test_custom_role():
         if "HttpError 409" not in str(e):
             raise e
         # Ignore error since we just reuse the same custom role.
-        print('Re-using the custom role "{}".'.format(CUSTOM_ROLE_NAME))
+        print(f'Re-using the custom role "{CUSTOM_ROLE_NAME}".')
     yield CUSTOM_ROLE_NAME
     # we don't delete this custom role for future tests.
 
 
 @pytest.fixture(scope="function")
 def unique_custom_role_name():
-    UNIQUE_CUSTOM_ROLE_NAME = "pythonTestCustomRole" + str(uuid.uuid1().int)
+    UNIQUE_CUSTOM_ROLE_NAME = f"pythonTestCustomRole{str(uuid.uuid1().int)}"
     yield UNIQUE_CUSTOM_ROLE_NAME
 
     # Delete the custom role
@@ -68,8 +68,9 @@ def unique_custom_role_name():
 
 def test_query_testable_permissions(capsys):
     custom_roles.query_testable_permissions(
-        "//cloudresourcemanager.googleapis.com/projects/" + GCLOUD_PROJECT
+        f"//cloudresourcemanager.googleapis.com/projects/{GCLOUD_PROJECT}"
     )
+
     out, _ = capsys.readouterr()
     # Just make sure the sample printed out multiple permissions.
     assert "\n" in out

@@ -31,23 +31,20 @@ device_id_template = "test-device-{}"
 es_cert_path = "resources/ec_public.pem"
 rsa_cert_path = "resources/rsa_cert.pem"
 rsa_private_path = "resources/rsa_private.pem"
-topic_id = "test-device-events-topic-{}".format(int(time.time()))
+topic_id = f"test-device-events-topic-{int(time.time())}"
 
 project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
 service_account_json = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
 
-pubsub_topic = "projects/{}/topics/{}".format(project_id, topic_id)
-registry_id = "test-registry-{}-{}".format(uuid.uuid4().hex, int(time.time()))
+pubsub_topic = f"projects/{project_id}/topics/{topic_id}"
+registry_id = f"test-registry-{uuid.uuid4().hex}-{int(time.time())}"
 
 _BASE_URL = "https://cloudiotdevice.googleapis.com/v1"
 
 
 @pytest.fixture(scope="module")
 def test_topic():
-    topic = manager.create_iot_topic(project_id, topic_id)
-
-    yield topic
-
+    yield manager.create_iot_topic(project_id, topic_id)
     pubsub_client = pubsub.PublisherClient()
     topic_path = pubsub_client.topic_path(project_id, topic_id)
     pubsub_client.delete_topic(request={"topic": topic_path})

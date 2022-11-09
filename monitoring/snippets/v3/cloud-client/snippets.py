@@ -30,7 +30,7 @@ def create_metric_descriptor(project_id):
     client = monitoring_v3.MetricServiceClient()
     project_name = f"projects/{project_id}"
     descriptor = ga_metric.MetricDescriptor()
-    descriptor.type = "custom.googleapis.com/my_metric" + str(uuid.uuid4())
+    descriptor.type = f"custom.googleapis.com/my_metric{str(uuid.uuid4())}"
     descriptor.metric_kind = ga_metric.MetricDescriptor.MetricKind.GAUGE
     descriptor.value_type = ga_metric.MetricDescriptor.ValueType.DOUBLE
     descriptor.description = "This is a simple example of a custom metric."
@@ -44,7 +44,7 @@ def create_metric_descriptor(project_id):
     descriptor = client.create_metric_descriptor(
         name=project_name, metric_descriptor=descriptor
     )
-    print("Created {}.".format(descriptor.name))
+    print(f"Created {descriptor.name}.")
     # [END monitoring_create_metric]
 
 
@@ -54,7 +54,7 @@ def delete_metric_descriptor(descriptor_name):
 
     client = monitoring_v3.MetricServiceClient()
     client.delete_metric_descriptor(name=descriptor_name)
-    print("Deleted metric descriptor {}.".format(descriptor_name))
+    print(f"Deleted metric descriptor {descriptor_name}.")
     # [END monitoring_delete_metric]
 
 
@@ -66,7 +66,7 @@ def write_time_series(project_id):
     project_name = f"projects/{project_id}"
 
     series = monitoring_v3.TimeSeries()
-    series.metric.type = "custom.googleapis.com/my_metric" + str(uuid.uuid4())
+    series.metric.type = f"custom.googleapis.com/my_metric{str(uuid.uuid4())}"
     series.resource.type = "gce_instance"
     series.resource.labels["instance_id"] = "1234567890123456789"
     series.resource.labels["zone"] = "us-central1-f"

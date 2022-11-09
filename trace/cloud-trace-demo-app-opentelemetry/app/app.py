@@ -63,16 +63,14 @@ def template_test():
     # Return received input with the keyword
     keyword = os.getenv("KEYWORD")
     endpoint = os.getenv("ENDPOINT")
-# [START trace_context_header]
-    if endpoint is not None and endpoint != "":
-        data = {'body': keyword}
-        response = requests.get(
-            endpoint,
-            params=data,
-        )
-        return keyword + "\n" + response.text
-    else:
+    if endpoint is None or endpoint == "":
         return keyword, 200
+    data = {'body': keyword}
+    response = requests.get(
+        endpoint,
+        params=data,
+    )
+    return keyword + "\n" + response.text
 # [END trace_context_header]
 
 

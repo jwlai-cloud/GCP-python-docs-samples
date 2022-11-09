@@ -61,14 +61,16 @@ def create_jwt(project_id, private_key_file, algorithm):
     }
     with open(private_key_file, 'r') as f:
         private_key = f.read()
-    print('Creating JWT using {} from private key file {}'.format(
-        algorithm, private_key_file))
+    print(
+        f'Creating JWT using {algorithm} from private key file {private_key_file}'
+    )
+
     return jwt.encode(token, private_key, algorithm=algorithm)
 
 
 def error_str(rc):
     """Convert a Paho error to a human readable string."""
-    return '{}: {}'.format(rc, mqtt.error_string(rc))
+    return f'{rc}: {mqtt.error_string(rc)}'
 
 
 class Device(object):
@@ -123,8 +125,10 @@ class Device(object):
     def on_message(self, unused_client, unused_userdata, message):
         """Callback when the device receives a message on a subscription."""
         payload = message.payload.decode('utf-8')
-        print('Received message \'{}\' on topic \'{}\' with Qos {}'.format(
-            payload, message.topic, str(message.qos)))
+        print(
+            f"Received message \'{payload}\' on topic \'{message.topic}\' with Qos {str(message.qos)}"
+        )
+
 
         # The device will receive its latest config when it subscribes to the
         # config topic. If there is no configuration for the device, the device
@@ -198,11 +202,9 @@ def main():
 
     # Create the MQTT client and connect to Cloud IoT.
     client = mqtt.Client(
-        client_id='projects/{}/locations/{}/registries/{}/devices/{}'.format(
-            args.project_id,
-            args.cloud_region,
-            args.registry_id,
-            args.device_id))
+        client_id=f'projects/{args.project_id}/locations/{args.cloud_region}/registries/{args.registry_id}/devices/{args.device_id}'
+    )
+
     client.username_pw_set(
         username='unused',
         password=create_jwt(
@@ -225,10 +227,10 @@ def main():
 
     # This is the topic that the device will publish telemetry events
     # (temperature data) to.
-    mqtt_telemetry_topic = '/devices/{}/events'.format(args.device_id)
+    mqtt_telemetry_topic = f'/devices/{args.device_id}/events'
 
     # This is the topic that the device will receive configuration updates on.
-    mqtt_config_topic = '/devices/{}/config'.format(args.device_id)
+    mqtt_config_topic = f'/devices/{args.device_id}/config'
 
     # Wait up to 5 seconds for the device to connect.
     device.wait_for_connection(5)

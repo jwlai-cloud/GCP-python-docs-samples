@@ -71,11 +71,12 @@ def spark_streaming_to_pubsublite(
             f"projects/{project_number}/locations/{location}/topics/{topic_id}",
         )
         # Required. Use a unique checkpoint location for each job.
-        .option("checkpointLocation", "/tmp/app" + uuid.uuid4().hex)
+        .option("checkpointLocation", f"/tmp/app{uuid.uuid4().hex}")
         .outputMode("append")
         .trigger(processingTime="1 second")
         .start()
     )
+
 
     # Wait 60 seconds to terminate the query.
     query.awaitTermination(60)

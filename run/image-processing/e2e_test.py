@@ -27,7 +27,7 @@ from google.cloud.storage import Blob, notification
 import pytest
 
 
-SUFFIX = uuid.uuid4().hex[0:6]
+SUFFIX = uuid.uuid4().hex[:6]
 PROJECT = os.environ["GOOGLE_CLOUD_PROJECT"]
 IMAGE_NAME = f"gcr.io/{PROJECT}/image-proc-{SUFFIX}"
 CLOUD_RUN_SERVICE = f"image-proc-{SUFFIX}"
@@ -232,10 +232,10 @@ def test_end_to_end(input_bucket, output_bucket):
     time.sleep(60)
 
     # Sometimes we may have to wait even longer. Check every 10 seconds for 5 minutes.
-    for x in range(30):
+    for _ in range(30):
         # Check for blurred image in output bucket
         output_blobs = list(output_bucket.list_blobs())
-        if len(output_blobs) > 0:
+        if output_blobs:
             break
 
         time.sleep(10)

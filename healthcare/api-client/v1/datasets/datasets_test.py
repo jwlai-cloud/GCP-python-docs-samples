@@ -25,8 +25,8 @@ import datasets
 cloud_region = "us-central1"
 project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
 
-dataset_id = "test-dataset-{}".format(uuid.uuid4())
-destination_dataset_id = "test-destination-dataset-{}".format(uuid.uuid4())
+dataset_id = f"test-dataset-{uuid.uuid4()}"
+destination_dataset_id = f"test-destination-dataset-{uuid.uuid4()}"
 time_zone = "UTC"
 
 
@@ -60,17 +60,17 @@ def test_dataset():
 
     # Clean up
     @retry(
-        wait_exponential_multiplier=1000,
-        wait_exponential_max=10000,
-        stop_max_attempt_number=10,
-        retry_on_exception=retry_if_server_exception,
-    )
+            wait_exponential_multiplier=1000,
+            wait_exponential_max=10000,
+            stop_max_attempt_number=10,
+            retry_on_exception=retry_if_server_exception,
+        )
     def clean_up():
         try:
             datasets.delete_dataset(project_id, cloud_region, dataset_id)
         except HttpError as err:
             # The API returns 403 when the dataset doesn't exist.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print("Got exception {} while deleting dataset".format(err.resp.status))
             else:
                 raise
@@ -84,17 +84,17 @@ def dest_dataset_id():
 
     # Clean up
     @retry(
-        wait_exponential_multiplier=1000,
-        wait_exponential_max=10000,
-        stop_max_attempt_number=10,
-        retry_on_exception=retry_if_server_exception,
-    )
+            wait_exponential_multiplier=1000,
+            wait_exponential_max=10000,
+            stop_max_attempt_number=10,
+            retry_on_exception=retry_if_server_exception,
+        )
     def clean_up():
         try:
             datasets.delete_dataset(project_id, cloud_region, destination_dataset_id)
         except HttpError as err:
             # The API returns 403 when the dataset doesn't exist.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print("Got exception {} while deleting dataset".format(err.resp.status))
             else:
                 raise
@@ -108,17 +108,17 @@ def crud_dataset_id():
 
     # Clean up
     @retry(
-        wait_exponential_multiplier=1000,
-        wait_exponential_max=10000,
-        stop_max_attempt_number=10,
-        retry_on_exception=retry_if_server_exception,
-    )
+            wait_exponential_multiplier=1000,
+            wait_exponential_max=10000,
+            stop_max_attempt_number=10,
+            retry_on_exception=retry_if_server_exception,
+        )
     def clean_up():
         try:
             datasets.delete_dataset(project_id, cloud_region, dataset_id)
         except HttpError as err:
             # The API returns 403 when the dataset doesn't exist.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print("Got exception {} while deleting dataset".format(err.resp.status))
             else:
                 raise

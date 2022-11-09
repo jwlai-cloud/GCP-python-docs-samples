@@ -253,7 +253,7 @@ def editor_service_url_auth_token(editor_deployed_service):
 
 def test_end_to_end(editor_service_url_auth_token):
     editor_service_url, editor_auth_token = editor_service_url_auth_token
-    editor = editor_service_url + "/render"
+    editor = f"{editor_service_url}/render"
     data = json.dumps({"data": "**strong text**"})
 
     req = request.Request(

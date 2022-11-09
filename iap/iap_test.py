@@ -48,13 +48,13 @@ def test_main(capsys):
     # the IAP JWT in order to expose it to this test.  Thus, this test
     # exercises both make_iap_request and validate_jwt.
     resp = make_iap_request.make_iap_request(
-        'https://{}/'.format(REFLECT_SERVICE_HOSTNAME),
-        IAP_CLIENT_ID)
+        f'https://{REFLECT_SERVICE_HOSTNAME}/', IAP_CLIENT_ID
+    )
+
     iap_jwt = resp.split(': ').pop()
 
     # App Engine JWT audience format below
-    expected_audience = '/projects/{}/apps/{}'.format(
-        IAP_PROJECT_NUMBER, IAP_APP_ID)
+    expected_audience = f'/projects/{IAP_PROJECT_NUMBER}/apps/{IAP_APP_ID}'
 
     # We see occational test failures when the system clock in our
     # test VMs is incorrect. Sleeping 30 seconds to avoid the failure.

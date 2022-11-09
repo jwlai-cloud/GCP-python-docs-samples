@@ -64,12 +64,7 @@ def run(
 
     prediction = [dict(pred) for pred in response.predictions][0]
     return sorted(
-        [
-            (category, confidence)
-            for category, confidence in zip(
-                prediction["displayNames"], prediction["confidences"]
-            )
-        ],
+        list(zip(prediction["displayNames"], prediction["confidences"])),
         reverse=True,
         key=lambda x: x[1],
     )

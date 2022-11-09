@@ -49,12 +49,12 @@ def location() -> str:
 
 @pytest.fixture(scope="session")
 def python_version() -> str:
-    return "".join(platform.python_version_tuple()[0:2])
+    return "".join(platform.python_version_tuple()[:2])
 
 
 @pytest.fixture(scope="session")
 def unique_id() -> str:
-    id = uuid.uuid4().hex[0:6]
+    id = uuid.uuid4().hex[:6]
     print(f"Test unique identifier: {id}")
     return id
 
@@ -243,7 +243,7 @@ def run_notebook(
         start = section
         end = section.split(" ", 1)[0] + " "
         nb.cells = list(notebook_filter_section(start, end, nb.cells, until_end))
-        if len(nb.cells) == 0:
+        if not nb.cells:
             raise ValueError(
                 f"Section {repr(section)} not found in notebook {repr(ipynb_file)}"
             )

@@ -61,7 +61,7 @@ def render_classifications(values: np.ndarray, palette: list[str]) -> np.ndarray
     xs = np.linspace(0, len(palette), 256)
     indices = np.arange(len(palette))
 
-    red = np.interp(xs, indices, [int(c[0:2], 16) for c in palette])
+    red = np.interp(xs, indices, [int(c[:2], 16) for c in palette])
     green = np.interp(xs, indices, [int(c[2:4], 16) for c in palette])
     blue = np.interp(xs, indices, [int(c[4:6], 16) for c in palette])
 
@@ -115,7 +115,7 @@ def show_legend() -> None:
 
     reset_color = "\u001b[0m"
     for name, color in CLASSIFICATIONS.items():
-        red = int(color[0:2], 16)
+        red = int(color[:2], 16)
         green = int(color[2:4], 16)
         blue = int(color[4:6], 16)
         print(f"{color_box(red, green, blue)}   {reset_color} {name}")

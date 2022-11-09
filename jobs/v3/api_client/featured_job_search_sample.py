@@ -47,7 +47,7 @@ def generate_featured_job(company_name):
         'company_name': company_name,
         'promotion_value': 2
     }
-    print('Job generated: %s' % job)
+    print(f'Job generated: {job}')
     return job
 # [END featured_job]
 
@@ -61,7 +61,7 @@ def search_featured_job(client_service, company_name):
     }
     job_query = {'query': 'Software Engineer'}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'search_mode': 'FEATURED_JOB_SEARCH',
         'request_metadata': request_metadata,

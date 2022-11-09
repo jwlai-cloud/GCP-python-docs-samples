@@ -94,9 +94,7 @@ def get_readme_path(file_path):
     """Gets the readme for an associated sample file, basically just the
     README.md in the same directory."""
     dir = os.path.dirname(file_path)
-    readme = os.path.join(
-        REPO_ROOT, dir, 'README.md')
-    return readme
+    return os.path.join(REPO_ROOT, dir, 'README.md')
 
 
 def generate_doc_link_statement(docs):
@@ -117,18 +115,20 @@ These samples are used on the following documentation pages:
 {}
 
 <!-- end-auto-doc-link -->
-""".format('\n'.join(['* {}'.format(x) for x in links]))
+""".format(
+            '\n'.join([f'* {x}' for x in links])
+        )
 
 
 def update_readme(readme_path, docs):
     if not os.path.exists(readme_path):
-        print('{} doesn\'t exist'.format(readme_path))
+        print(f"{readme_path} doesn\'t exist")
         return
     replace_contents(
         readme_path,
         AUTO_DOC_LINK_EXP,
         generate_doc_link_statement(docs))
-    print('Updated {}'.format(readme_path))
+    print(f'Updated {readme_path}')
 
 
 def main():

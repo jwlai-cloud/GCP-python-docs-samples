@@ -30,8 +30,8 @@ import hl7v2_stores  # noqa
 location = "us-central1"
 project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
 
-dataset_id = "test_dataset_{}".format(uuid.uuid4())
-hl7v2_store_id = "test_hl7v2_store-{}".format(uuid.uuid4())
+dataset_id = f"test_dataset_{uuid.uuid4()}"
+hl7v2_store_id = f"test_hl7v2_store-{uuid.uuid4()}"
 hl7v2_message_file = "resources/hl7-sample-ingest.json"
 label_key = "PROCESSED"
 label_value = "TRUE"
@@ -63,7 +63,7 @@ def test_dataset():
             datasets.delete_dataset(project_id, location, dataset_id)
         except HttpError as err:
             # The API returns 403 when the dataset doesn't exist.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print("Got exception {} while deleting dataset".format(err.resp.status))
             else:
                 raise
@@ -105,7 +105,7 @@ def test_hl7v2_store():
             )
         except HttpError as err:
             # The API returns 403 when the HL7v2 store doesn't exist.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print(
                     "Got exception {} while deleting HL7v2 store".format(
                         err.resp.status

@@ -56,7 +56,7 @@ def test_minimally_valid_message(client):
 
 def test_call_to_blur_image(client, capsys):
     filename = str(uuid.uuid4())
-    blur_bucket = "blurred-bucket-" + str(uuid.uuid4())
+    blur_bucket = f"blurred-bucket-{str(uuid.uuid4())}"
 
     data_json = json.dumps({"name": filename, "bucket": blur_bucket})
     data = base64.b64encode(data_json.encode()).decode()

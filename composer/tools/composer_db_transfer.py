@@ -2767,7 +2767,7 @@ class EnvironmentUtils:
         if (
             len(items) != 6
             or items[0] != "projects"
-            or (items[2] != "zones" and items[2] != "locations")
+            or items[2] not in ["zones", "locations"]
             or items[4] != "clusters"
         ):
             raise Exception(
@@ -2799,8 +2799,7 @@ class EnvironmentUtils:
             "json",
         ]
         pods_json = Command.run_shell_command(shell_command)
-        pods_config = json.loads(pods_json)
-        return pods_config
+        return json.loads(pods_json)
 
     @staticmethod
     def get_pod_with_label(
@@ -3255,9 +3254,7 @@ class DatabaseImporter(DatabasePorter):
         self.environment_name = environment_name
         self.location = location
         self.fernet_key_file = fernet_key_file
-        self.is_good_airflow_version = (
-            lambda a, b, c: True if a == 2 and (b > 0 or c >= 1) else False
-        )
+        self.is_good_airflow_version = lambda a, b, c: a == 2 and ((b > 0 or c >= 1))
         self.bad_airflow_message = "Import operation supports only Airflow 2.0.1+."
 
     def _read_source_fernet_key(self: typing.Any) -> None:
@@ -3660,9 +3657,7 @@ python3 composer_db_transfer.py import ...
         self.environment_name = environment_name
         self.location = location
         self.fernet_key_file = fernet_key_file
-        self.is_good_airflow_version = (
-            lambda a, b, c: True if a == 1 and b == 10 and c >= 14 else False
-        )
+        self.is_good_airflow_version = lambda a, b, c: a == 1 and b == 10 and c >= 14
         self.bad_airflow_message = (
             "Export operation supports only Airflow 1.10.x, x >= 14."
         )

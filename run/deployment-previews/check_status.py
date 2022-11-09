@@ -84,7 +84,7 @@ def get_service(project_id: str, region: str, service_name: str) -> dict:
     try:
         service = api.projects().locations().services().get(name=fqname).execute()
     except HttpError as e:
-        error(re.search('"(.*)"', str(e)).group(0), context="finding service")
+        error(re.search('"(.*)"', str(e))[0], context="finding service")
     return service
 
 
@@ -101,7 +101,7 @@ def update_service(project_id: str, region: str, service_name: str, body: dict) 
             .execute()
         )
     except HttpError as e:
-        error(re.search('"(.*)"', str(e)).group(0), context="updating service")
+        error(re.search('"(.*)"', str(e))[0], context="updating service")
     return result
 
 
@@ -119,12 +119,11 @@ def get_revision_url(service_obj: dict, tag: str) -> str:
 
 def get_revision_tags(service: dict) -> List[str]:
     """Get all tags associated to a service"""
-    revs = []
-
-    for revision in service["status"]["traffic"]:
-        if revision.get("tag", None):
-            revs.append(revision)
-    return revs
+    return [
+        revision
+        for revision in service["status"]["traffic"]
+        if revision.get("tag", None)
+    ]
 
 
 @click.group()

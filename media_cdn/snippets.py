@@ -68,10 +68,9 @@ def sign_url(url: str, key_name: str, base64_key: str, expiration_time: datetime
     digest = ed25519.Ed25519PrivateKey.from_private_bytes(
         decoded_key).sign(url_to_sign.encode('utf-8'))
     signature = base64.urlsafe_b64encode(digest).decode('utf-8')
-    signed_url = u'{url}&Signature={signature}'.format(
-            url=url_to_sign, signature=signature)
-
-    return signed_url
+    return u'{url}&Signature={signature}'.format(
+        url=url_to_sign, signature=signature
+    )
 
 
 def sign_url_prefix(url: str, url_prefix, key_name: str, base64_key: str, expiration_time: datetime.datetime) -> str:
@@ -107,12 +106,12 @@ def sign_url_prefix(url: str, url_prefix, key_name: str, base64_key: str, expira
     digest = ed25519.Ed25519PrivateKey.from_private_bytes(
         decoded_key).sign(policy.encode('utf-8'))
     signature = base64.urlsafe_b64encode(digest).decode('utf-8')
-    signed_url = u'{url}{separator}{policy}&Signature={signature}'.format(
-            url=stripped_url,
-            separator='&' if query_params else '?',
-            policy=policy,
-            signature=signature)
-    return signed_url
+    return u'{url}{separator}{policy}&Signature={signature}'.format(
+        url=stripped_url,
+        separator='&' if query_params else '?',
+        policy=policy,
+        signature=signature,
+    )
 # [END mediacdn_sign_url]
 
 
@@ -145,7 +144,7 @@ def sign_cookie(url_prefix: str, key_name: str, base64_key: str, expiration_time
         decoded_key).sign(policy.encode('utf-8'))
     signature = base64.urlsafe_b64encode(digest).decode('utf-8')
 
-    signed_policy = u'Edge-Cache-Cookie={policy}:Signature={signature}'.format(
-            policy=policy, signature=signature)
-    return signed_policy
+    return u'Edge-Cache-Cookie={policy}:Signature={signature}'.format(
+        policy=policy, signature=signature
+    )
 # [END mediacdn_sign_cookie]

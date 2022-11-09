@@ -45,7 +45,7 @@ def transmit_image(
         image_data = base64.b64encode(image_file.read()).decode("utf-8")
 
     sub_topic = "events"
-    mqtt_topic = "/devices/{}/{}".format(device_id, sub_topic)
+    mqtt_topic = f"/devices/{device_id}/{sub_topic}"
 
     client = cloudiot_mqtt_example.get_client(
         project_id,
@@ -83,7 +83,7 @@ def receive_image(project_id, subscription_path, prefix, extension, timeout):
     def callback(message):
         global count
         try:
-            count = count + 1
+            count += 1
             print("Received image {}:".format(count))
             image_data = base64.b64decode(message.data)
 

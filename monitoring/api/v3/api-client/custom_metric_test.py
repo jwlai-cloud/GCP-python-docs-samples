@@ -23,6 +23,7 @@ Currently the TEST_PROJECT_ID is hard-coded to run using the project created
 for this test, but it could be changed to a different project.
 """
 
+
 import os
 import random
 import time
@@ -41,15 +42,14 @@ from custom_metric import write_timeseries_value
 
 
 PROJECT = os.environ['GOOGLE_CLOUD_PROJECT']
-PROJECT_RESOURCE = "projects/{}".format(PROJECT)
+PROJECT_RESOURCE = f"projects/{PROJECT}"
 
 """ Custom metric domain for all custom metrics"""
 CUSTOM_METRIC_DOMAIN = "custom.googleapis.com"
 
 METRIC = 'compute.googleapis.com/instance/cpu/usage_time'
 METRIC_NAME = uuid.uuid4().hex
-METRIC_RESOURCE = "{}/{}".format(
-    CUSTOM_METRIC_DOMAIN, METRIC_NAME)
+METRIC_RESOURCE = f"{CUSTOM_METRIC_DOMAIN}/{METRIC_NAME}"
 METRIC_KIND = "GAUGE"
 
 

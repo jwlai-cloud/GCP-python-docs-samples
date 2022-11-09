@@ -54,10 +54,9 @@ def create_jwt(project_id, private_key_file, algorithm):
         private_key = f.read()
 
     print(
-        "Creating JWT using {} from private key file {}".format(
-            algorithm, private_key_file
-        )
+        f"Creating JWT using {algorithm} from private key file {private_key_file}"
     )
+
 
     return jwt.encode(token, private_key, algorithm=algorithm)
 
@@ -68,7 +67,6 @@ def create_jwt(project_id, private_key_file, algorithm):
 @retry.Retry(
     predicate=retry.if_exception_type(AssertionError), deadline=_BACKOFF_DURATION
 )
-# [START iot_http_publish]
 def publish_message(
     message,
     message_type,
@@ -80,17 +78,17 @@ def publish_message(
     jwt_token,
 ):
     headers = {
-        "authorization": "Bearer {}".format(jwt_token),
+        "authorization": f"Bearer {jwt_token}",
         "content-type": "application/json",
         "cache-control": "no-cache",
     }
 
+
     # Publish to the events or state topic based on the flag.
     url_suffix = "publishEvent" if message_type == "event" else "setState"
 
-    publish_url = ("{}/projects/{}/locations/{}/registries/{}/devices/{}:{}").format(
-        base_url, project_id, cloud_region, registry_id, device_id, url_suffix
-    )
+    publish_url = f"{base_url}/projects/{project_id}/locations/{cloud_region}/registries/{registry_id}/devices/{device_id}:{url_suffix}"
+
 
     body = None
     msg_bytes = base64.urlsafe_b64encode(message.encode("utf-8"))
@@ -102,8 +100,8 @@ def publish_message(
     resp = requests.post(publish_url, data=json.dumps(body), headers=headers)
 
     if resp.status_code != 200:
-        print("Response came back {}, retrying".format(resp.status_code))
-        raise AssertionError("Not OK response: {}".format(resp.status_code))
+        print(f"Response came back {resp.status_code}, retrying")
+        raise AssertionError(f"Not OK response: {resp.status_code}")
 
     return resp
 
@@ -114,7 +112,6 @@ def publish_message(
 @retry.Retry(
     predicate=retry.if_exception_type(AssertionError), deadline=_BACKOFF_DURATION
 )
-# [START iot_http_getconfig]
 def get_config(
     version,
     message_type,
@@ -126,10 +123,11 @@ def get_config(
     jwt_token,
 ):
     headers = {
-        "authorization": "Bearer {}".format(jwt_token),
+        "authorization": f"Bearer {jwt_token}",
         "content-type": "application/json",
         "cache-control": "no-cache",
     }
+
 
     basepath = "{}/projects/{}/locations/{}/registries/{}/devices/{}/"
     template = basepath + "config?local_version={}"
@@ -140,8 +138,8 @@ def get_config(
     resp = requests.get(config_url, headers=headers)
 
     if resp.status_code != 200:
-        print("Error getting config: {}, retrying".format(resp.status_code))
-        raise AssertionError("Not OK response: {}".format(resp.status_code))
+        print(f"Error getting config: {resp.status_code}, retrying")
+        raise AssertionError(f"Not OK response: {resp.status_code}")
 
     return resp
 
@@ -237,9 +235,9 @@ def main():
             )
             jwt_iat = datetime.datetime.now(tz=datetime.timezone.utc)
 
-        payload = "{}/{}-payload-{}".format(args.registry_id, args.device_id, i)
+        payload = f"{args.registry_id}/{args.device_id}-payload-{i}"
 
-        print("Publishing message {}/{}: '{}'".format(i, args.num_messages, payload))
+        print(f"Publishing message {i}/{args.num_messages}: '{payload}'")
 
         resp = publish_message(
             payload,

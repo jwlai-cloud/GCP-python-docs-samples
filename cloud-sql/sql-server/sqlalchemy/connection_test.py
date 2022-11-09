@@ -38,9 +38,7 @@ def setup_test_env():
 def client() -> FlaskClient:
     setup_test_env()
     app.app.testing = True
-    client = app.app.test_client()
-
-    return client
+    return app.app.test_client()
 
 
 def test_get_votes(client: FlaskClient) -> None:

@@ -51,10 +51,10 @@ class MainPage(webapp2.RequestHandler):
         greetings = Greeting.query_book(ancestor_key).fetch(20)
 # [END query]
 
-        greeting_blockquotes = []
-        for greeting in greetings:
-            greeting_blockquotes.append(
-                '<blockquote>%s</blockquote>' % cgi.escape(greeting.content))
+        greeting_blockquotes = [
+            f'<blockquote>{cgi.escape(greeting.content)}</blockquote>'
+            for greeting in greetings
+        ]
 
         self.response.out.write(textwrap.dedent("""\
             <html>

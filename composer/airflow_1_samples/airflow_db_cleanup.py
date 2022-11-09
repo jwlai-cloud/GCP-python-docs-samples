@@ -47,6 +47,7 @@ The DAG is a fork of [teamclairvoyant repository.](https://github.com/teamclairv
 
 4. Put the DAG in your gcs bucket.
 """
+
 from datetime import datetime, timedelta
 import logging
 import os
@@ -195,7 +196,7 @@ except Exception as e:
 
 # Check for celery executor
 airflow_executor = str(conf.get("core", "executor"))
-logging.info("Airflow Executor: " + str(airflow_executor))
+logging.info(f"Airflow Executor: {airflow_executor}")
 if (airflow_executor == "CeleryExecutor"):
     logging.info("Including Celery Modules")
     try:
@@ -246,12 +247,12 @@ if hasattr(dag, "catchup"):
 def print_configuration_function(**context):
     logging.info("Loading Configurations...")
     dag_run_conf = context.get("dag_run").conf
-    logging.info("dag_run.conf: " + str(dag_run_conf))
+    logging.info(f"dag_run.conf: {str(dag_run_conf)}")
     max_db_entry_age_in_days = None
     if dag_run_conf:
         max_db_entry_age_in_days = dag_run_conf.get(
             "maxDBEntryAgeInDays", None)
-    logging.info("maxDBEntryAgeInDays from dag_run.conf: " + str(dag_run_conf))
+    logging.info(f"maxDBEntryAgeInDays from dag_run.conf: {str(dag_run_conf)}")
     if (max_db_entry_age_in_days is None or max_db_entry_age_in_days < 1):
         logging.info(
             "maxDBEntryAgeInDays conf variable isn't included or Variable " +
@@ -263,10 +264,10 @@ def print_configuration_function(**context):
     logging.info("")
 
     logging.info("Configurations:")
-    logging.info("max_db_entry_age_in_days: " + str(max_db_entry_age_in_days))
-    logging.info("max_date:                 " + str(max_date))
-    logging.info("enable_delete:            " + str(ENABLE_DELETE))
-    logging.info("session:                  " + str(session))
+    logging.info(f"max_db_entry_age_in_days: {str(max_db_entry_age_in_days)}")
+    logging.info(f"max_date:                 {str(max_date)}")
+    logging.info(f"enable_delete:            {str(ENABLE_DELETE)}")
+    logging.info(f"session:                  {str(session)}")
     logging.info("")
 
     logging.info("Setting max_execution_date to XCom for Downstream Processes")
@@ -295,15 +296,15 @@ def cleanup_function(**context):
     keep_last_group_by = context["params"].get("keep_last_group_by")
 
     logging.info("Configurations:")
-    logging.info("max_date:                 " + str(max_date))
-    logging.info("enable_delete:            " + str(ENABLE_DELETE))
-    logging.info("session:                  " + str(session))
-    logging.info("airflow_db_model:         " + str(airflow_db_model))
-    logging.info("state:                    " + str(state))
-    logging.info("age_check_column:         " + str(age_check_column))
-    logging.info("keep_last:                " + str(keep_last))
-    logging.info("keep_last_filters:        " + str(keep_last_filters))
-    logging.info("keep_last_group_by:       " + str(keep_last_group_by))
+    logging.info(f"max_date:                 {str(max_date)}")
+    logging.info(f"enable_delete:            {str(ENABLE_DELETE)}")
+    logging.info(f"session:                  {str(session)}")
+    logging.info(f"airflow_db_model:         {str(airflow_db_model)}")
+    logging.info(f"state:                    {str(state)}")
+    logging.info(f"age_check_column:         {str(age_check_column)}")
+    logging.info(f"keep_last:                {str(keep_last)}")
+    logging.info(f"keep_last_filters:        {str(keep_last_filters)}")
+    logging.info(f"keep_last_group_by:       {str(keep_last_group_by)}")
 
     logging.info("")
 
@@ -313,7 +314,7 @@ def cleanup_function(**context):
         query = session.query(airflow_db_model).options(
             load_only(age_check_column))
 
-        logging.info("INITIAL QUERY : " + str(query))
+        logging.info(f"INITIAL QUERY : {str(query)}")
 
         if keep_last:
 
@@ -324,7 +325,7 @@ def cleanup_function(**context):
                 for entry in keep_last_filters:
                     subquery = subquery.filter(entry)
 
-                logging.info("SUB QUERY [keep_last_filters]: " + str(subquery))
+                logging.info(f"SUB QUERY [keep_last_filters]: {str(subquery)}")
 
             if keep_last_group_by is not None:
                 subquery = subquery.group_by(keep_last_group_by)
@@ -344,7 +345,7 @@ def cleanup_function(**context):
         if PRINT_DELETES:
             entries_to_delete = query.all()
 
-            logging.info("Query: " + str(query))
+            logging.info(f"Query: {str(query)}")
             logging.info("Process will be Deleting the following " +
                          str(airflow_db_model.__name__) + "(s):")
             for entry in entries_to_delete:

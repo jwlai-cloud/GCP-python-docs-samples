@@ -32,7 +32,7 @@ project_id = os.environ["GCP_PROJECT"]
 
 # [START functions_ocr_detect]
 def detect_text(bucket, filename):
-    print("Looking for text in image {}".format(filename))
+    print(f"Looking for text in image {filename}")
 
     futures = []
 
@@ -41,21 +41,18 @@ def detect_text(bucket, filename):
     )
     text_detection_response = vision_client.text_detection(image=image)
     annotations = text_detection_response.text_annotations
-    if len(annotations) > 0:
-        text = annotations[0].description
-    else:
-        text = ""
-    print("Extracted text {} from image ({} chars).".format(text, len(text)))
+    text = annotations[0].description if len(annotations) > 0 else ""
+    print(f"Extracted text {text} from image ({len(text)} chars).")
 
     detect_language_response = translate_client.detect_language(text)
     src_lang = detect_language_response["language"]
-    print("Detected language {} for text {}.".format(src_lang, text))
+    print(f"Detected language {src_lang} for text {text}.")
 
     # Submit a message to the bus for each target language
     to_langs = os.environ["TO_LANG"].split(",")
     for target_lang in to_langs:
         topic_name = os.environ["TRANSLATE_TOPIC"]
-        if src_lang == target_lang or src_lang == "und":
+        if src_lang in [target_lang, "und"]:
             topic_name = os.environ["RESULT_TOPIC"]
         message = {
             "text": text,
@@ -76,15 +73,15 @@ def detect_text(bucket, filename):
 
 # [START message_validatation_helper]
 def validate_message(message, param):
-    var = message.get(param)
-    if not var:
+    if var := message.get(param):
+        return var
+    else:
         raise ValueError(
             "{} is not provided. Make sure you have \
                           property {} in the request".format(
                 param, param
             )
         )
-    return var
 
 
 # [END message_validatation_helper]
@@ -105,7 +102,7 @@ def process_image(file, context):
 
     detect_text(bucket, name)
 
-    print("File {} processed.".format(file["name"]))
+    print(f'File {file["name"]} processed.')
 
 
 # [END functions_ocr_process]
@@ -113,18 +110,17 @@ def process_image(file, context):
 
 # [START functions_ocr_translate]
 def translate_text(event, context):
-    if event.get("data"):
-        message_data = base64.b64decode(event["data"]).decode("utf-8")
-        message = json.loads(message_data)
-    else:
+    if not event.get("data"):
         raise ValueError("Data sector is missing in the Pub/Sub message.")
 
+    message_data = base64.b64decode(event["data"]).decode("utf-8")
+    message = json.loads(message_data)
     text = validate_message(message, "text")
     filename = validate_message(message, "filename")
     target_lang = validate_message(message, "lang")
     src_lang = validate_message(message, "src_lang")
 
-    print("Translating text into {}.".format(target_lang))
+    print(f"Translating text into {target_lang}.")
     translated_text = translate_client.translate(
         text, target_language=target_lang, source_language=src_lang
     )
@@ -145,24 +141,23 @@ def translate_text(event, context):
 
 # [START functions_ocr_save]
 def save_result(event, context):
-    if event.get("data"):
-        message_data = base64.b64decode(event["data"]).decode("utf-8")
-        message = json.loads(message_data)
-    else:
+    if not event.get("data"):
         raise ValueError("Data sector is missing in the Pub/Sub message.")
 
+    message_data = base64.b64decode(event["data"]).decode("utf-8")
+    message = json.loads(message_data)
     text = validate_message(message, "text")
     filename = validate_message(message, "filename")
     lang = validate_message(message, "lang")
 
-    print("Received request to save file {}.".format(filename))
+    print(f"Received request to save file {filename}.")
 
     bucket_name = os.environ["RESULT_BUCKET"]
-    result_filename = "{}_{}.txt".format(filename, lang)
+    result_filename = f"{filename}_{lang}.txt"
     bucket = storage_client.get_bucket(bucket_name)
     blob = bucket.blob(result_filename)
 
-    print("Saving result to {} in bucket {}.".format(result_filename, bucket_name))
+    print(f"Saving result to {result_filename} in bucket {bucket_name}.")
 
     blob.upload_from_string(text)
 

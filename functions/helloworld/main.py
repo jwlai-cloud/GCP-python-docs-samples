@@ -68,7 +68,7 @@ def hello_http(request):
         name = request_args['name']
     else:
         name = 'World'
-    return 'Hello {}!'.format(escape(name))
+    return f'Hello {escape(name)}!'
 # [END functions_helloworld_http]
 
 
@@ -103,7 +103,7 @@ def hello_pubsub(event, context):
         name = base64.b64decode(event['data']).decode('utf-8')
     else:
         name = 'World'
-    print('Hello {}!'.format(name))
+    print(f'Hello {name}!')
 # [END functions_helloworld_pubsub]
 
 
@@ -122,13 +122,13 @@ def hello_gcs(event, context):
         None; the output is written to Cloud Logging
     """
 
-    print('Event ID: {}'.format(context.event_id))
-    print('Event type: {}'.format(context.event_type))
-    print('Bucket: {}'.format(event['bucket']))
-    print('File: {}'.format(event['name']))
-    print('Metageneration: {}'.format(event['metageneration']))
-    print('Created: {}'.format(event['timeCreated']))
-    print('Updated: {}'.format(event['updated']))
+    print(f'Event ID: {context.event_id}')
+    print(f'Event type: {context.event_type}')
+    print(f"Bucket: {event['bucket']}")
+    print(f"File: {event['name']}")
+    print(f"Metageneration: {event['metageneration']}")
+    print(f"Created: {event['timeCreated']}")
+    print(f"Updated: {event['updated']}")
 # [END functions_helloworld_storage]
 
 
@@ -152,15 +152,13 @@ def hello_content(request):
             name = request_json['name']
         else:
             raise ValueError("JSON is invalid, or missing a 'name' property")
-    elif content_type == 'application/octet-stream':
-        name = request.data
-    elif content_type == 'text/plain':
+    elif content_type in ['application/octet-stream', 'text/plain']:
         name = request.data
     elif content_type == 'application/x-www-form-urlencoded':
         name = request.form.get('name')
     else:
-        raise ValueError("Unknown content type: {}".format(content_type))
-    return 'Hello {}!'.format(escape(name))
+        raise ValueError(f"Unknown content type: {content_type}")
+    return f'Hello {escape(name)}!'
 # [END functions_http_content]
 
 

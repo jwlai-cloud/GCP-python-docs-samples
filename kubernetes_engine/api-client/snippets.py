@@ -26,9 +26,10 @@ def list_clusters_and_nodepools(project_id, zone):
         projectId=project_id, zone=zone).execute()
 
     for cluster in clusters_response.get('clusters', []):
-        print('Cluster: {}, Status: {}, Current Master Version: {}'.format(
-            cluster['name'], cluster['status'],
-            cluster['currentMasterVersion']))
+        print(
+            f"Cluster: {cluster['name']}, Status: {cluster['status']}, Current Master Version: {cluster['currentMasterVersion']}"
+        )
+
 
         nodepools_response = clusters_resource.nodePools().list(
             projectId=project_id, zone=zone,

@@ -52,7 +52,7 @@ def send_command(sock, message, should_wait):
     # conditionally wait on the response from the gateway
     if should_wait:
         response = sock.recv(BUFF_SIZE)
-        print('Response: {}'.format(response.decode("utf-8")))
+        print(f'Response: {response.decode("utf-8")}')
 
 
 def make_message(device_id, action, data=''):
@@ -70,7 +70,7 @@ def run_action(sock, device_id, action, data=''):
     message = make_message(device_id, action, data)
     if not message:
         return
-    print('Send message: {}'.format(message))
+    print(f'Send message: {message}')
     send_command(sock, message.encode(), True)
 
 
@@ -84,11 +84,21 @@ def detect_light(device_id, sock):
     lux = "{:.3f}".format(LightSensor.lux)
 
     sys.stdout.write(
-            '\r>> ' + bcolors.CGREEN + bcolors.CBOLD + 'Lux: {}'.format(lux) +
-            bcolors.ENDC + ' <<')
+        (
+            (
+                '\r>> '
+                + bcolors.CGREEN
+                + bcolors.CBOLD
+                + f'Lux: {lux}'
+                + bcolors.ENDC
+            )
+            + ' <<'
+        )
+    )
+
     sys.stdout.flush()
 
-    message = make_message(device_id, 'event', 'lux={}'.format(lux)).encode()
+    message = make_message(device_id, 'event', f'lux={lux}').encode()
 
     send_command(sock, message, False)
     time.sleep(LightSensor.interval)
@@ -97,12 +107,13 @@ def detect_light(device_id, sock):
 def print_sensor_state():
     if LightSensor.power == 'on':
         print(
-            '\nSensor is {}, reporting lux every {} seconds.'.format(
-                LightSensor.power, LightSensor.interval))
+            f'\nSensor is {LightSensor.power}, reporting lux every {LightSensor.interval} seconds.'
+        )
+
     else:
         print(
-            '\nSensor is {}. Send a configuration update to turn on'.format(
-                LightSensor.power))
+            f'\nSensor is {LightSensor.power}. Send a configuration update to turn on'
+        )
 
 
 def process_message(message):
@@ -116,7 +127,7 @@ def process_message(message):
     # Turns the power of the light sensor on/off
     if 'power' in message:
         state = message['power'].lower()
-        if state == 'on' or state == 'off':
+        if state in ['on', 'off']:
             LightSensor.power = state
         else:
             print('Invalid value for key "power". Specify "on" or "off."')
@@ -140,7 +151,7 @@ def main():
     if not device_id:
         sys.exit('The device id must be specified.')
 
-    print('Bringing up device {}'.format(device_id))
+    print(f'Bringing up device {device_id}')
 
     try:
         run_action(sock, device_id, 'detach')
@@ -164,7 +175,7 @@ def main():
 
                 # If there is no data from the socket, just report the lux
                 # readings
-                if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
+                if err in [errno.EAGAIN, errno.EWOULDBLOCK]:
                     # If the light sensor is off, wait a bit before checking
                     # again.
                     if LightSensor.power.lower() == 'off':
@@ -181,7 +192,7 @@ def main():
                 if decode != '':
                     message = json.loads(decode)
                     if not message:
-                        print('invalid json: {}'.format(data.decode("utf-8")))
+                        print(f'invalid json: {data.decode("utf-8")}')
                         continue
                     process_message(message)
     finally:

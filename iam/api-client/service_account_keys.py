@@ -46,9 +46,16 @@ def create_key(service_account_email):
     service = googleapiclient.discovery.build(
         'iam', 'v1', credentials=credentials)
 
-    key = service.projects().serviceAccounts().keys().create(
-        name='projects/-/serviceAccounts/' + service_account_email, body={}
-        ).execute()
+    key = (
+        service.projects()
+        .serviceAccounts()
+        .keys()
+        .create(
+            name=f'projects/-/serviceAccounts/{service_account_email}', body={}
+        )
+        .execute()
+    )
+
 
     # The privateKeyData field contains the base64-encoded service account key
     # in JSON format.
@@ -73,8 +80,14 @@ def list_keys(service_account_email):
     service = googleapiclient.discovery.build(
         'iam', 'v1', credentials=credentials)
 
-    keys = service.projects().serviceAccounts().keys().list(
-        name='projects/-/serviceAccounts/' + service_account_email).execute()
+    keys = (
+        service.projects()
+        .serviceAccounts()
+        .keys()
+        .list(name=f'projects/-/serviceAccounts/{service_account_email}')
+        .execute()
+    )
+
 
     for key in keys['keys']:
         print('Key: ' + key['name'])
@@ -95,7 +108,7 @@ def delete_key(full_key_name):
     service.projects().serviceAccounts().keys().delete(
         name=full_key_name).execute()
 
-    print('Deleted key: ' + full_key_name)
+    print(f'Deleted key: {full_key_name}')
 # [END iam_delete_key]
 
 

@@ -74,7 +74,7 @@ def get_client(service_account_json):
     )
     scoped_credentials = credentials.with_scopes(api_scopes)
 
-    discovery_url = "{}?version={}".format(discovery_api, api_version)
+    discovery_url = f"{discovery_api}?version={api_version}"
 
     return discovery.build(
         service_name,
@@ -152,16 +152,11 @@ def create_device(
     # Check that the device doesn't already exist
     client = iot_v1.DeviceManagerClient()
 
-    exists = False
-
     parent = client.registry_path(project_id, cloud_region, registry_id)
 
     devices = list(client.list_devices(request={"parent": parent}))
 
-    for device in devices:
-        if device.id == device_id:
-            exists = True
-
+    exists = any(device.id == device_id for device in devices)
     # Create the device
     device_template = {
         "id": device_id,
@@ -175,7 +170,7 @@ def create_device(
         res = client.create_device(
             request={"parent": parent, "device": device_template}
         )
-        print("Created Device {}".format(res))
+        print(f"Created Device {res}")
     else:
         print("Device exists, skipping")
 
@@ -209,9 +204,8 @@ def delete_registry(service_account_json, project_id, cloud_region, registry_id)
     print("Delete registry")
 
     client = iot_v1.DeviceManagerClient()
-    registry_path = "projects/{}/locations/{}/registries/{}".format(
-        project_id, cloud_region, registry_id
-    )
+    registry_path = f"projects/{project_id}/locations/{cloud_region}/registries/{registry_id}"
+
 
     try:
         client.delete_device_registry(request={"name": registry_path})
@@ -229,32 +223,32 @@ def get_device(service_account_json, project_id, cloud_region, registry_id, devi
 
     device = client.get_device(request={"name": device_path})
 
-    print("Id : {}".format(device.id))
-    print("Name : {}".format(device.name))
+    print(f"Id : {device.id}")
+    print(f"Name : {device.name}")
     print("Credentials:")
 
     if device.credentials is not None:
         for credential in device.credentials:
             keyinfo = credential.public_key
-            print("\tcertificate: \n{}".format(keyinfo.key))
+            print(f"\tcertificate: \n{keyinfo.key}")
 
-            if keyinfo.format == 4:
-                keyformat = "ES256_X509_PEM"
-            elif keyinfo.format == 3:
-                keyformat = "RSA_PEM"
+            if keyinfo.format == 1:
+                keyformat = "RSA_X509_PEM"
             elif keyinfo.format == 2:
                 keyformat = "ES256_PEM"
-            elif keyinfo.format == 1:
-                keyformat = "RSA_X509_PEM"
+            elif keyinfo.format == 3:
+                keyformat = "RSA_PEM"
+            elif keyinfo.format == 4:
+                keyformat = "ES256_X509_PEM"
             else:
                 keyformat = "UNSPECIFIED_PUBLIC_KEY_FORMAT"
-            print("\tformat : {}".format(keyformat))
-            print("\texpiration: {}".format(credential.expiration_time))
+            print(f"\tformat : {keyformat}")
+            print(f"\texpiration: {credential.expiration_time}")
 
     print("Config:")
-    print("\tdata: {}".format(device.config.binary_data))
-    print("\tversion: {}".format(device.config.version))
-    print("\tcloudUpdateTime: {}".format(device.config.cloud_update_time))
+    print(f"\tdata: {device.config.binary_data}")
+    print(f"\tversion: {device.config.version}")
+    print(f"\tcloudUpdateTime: {device.config.cloud_update_time}")
 
     return device
 
@@ -264,7 +258,7 @@ def get_state(service_account_json, project_id, cloud_region, registry_id, devic
     device_path = client.device_path(project_id, cloud_region, registry_id, device_id)
 
     device = client.get_device(request={"name": device_path})
-    print("Last state: {}".format(device.state))
+    print(f"Last state: {device.state}")
 
     print("State history")
     states = client.list_device_states(request={"name": device_path}).device_states
@@ -272,7 +266,7 @@ def get_state(service_account_json, project_id, cloud_region, registry_id, devic
     # Avoid ReferenceError in py-3.9 builds.
     if states:
         for state in states:
-            print("State: {}".format(state))
+            print(f"State: {state}")
 
     return states
 
@@ -285,7 +279,7 @@ def list_devices(service_account_json, project_id, cloud_region, registry_id):
 
     devices = list(client.list_devices(request={"parent": registry_path}))
     for device in devices:
-        print("Device: {} : {}".format(device.num_id, device.id))
+        print(f"Device: {device.num_id} : {device.id}")
 
     return devices
 
@@ -297,7 +291,7 @@ def list_registries(service_account_json, project_id, cloud_region):
 
     registries = list(client.list_device_registries(request={"parent": parent}))
     for registry in registries:
-        print("id: {}\n\tname: {}".format(registry.id, registry.name))
+        print(f"id: {registry.id}\n\tname: {registry.name}")
 
     return registries
 
@@ -309,7 +303,7 @@ def create_registry(
     parent = f"projects/{project_id}/locations/{cloud_region}"
 
     if not pubsub_topic.startswith("projects/"):
-        pubsub_topic = "projects/{}/topics/{}".format(project_id, pubsub_topic)
+        pubsub_topic = f"projects/{project_id}/topics/{pubsub_topic}"
 
     body = {
         "event_notification_configs": [{"pubsub_topic_name": pubsub_topic}],
@@ -346,12 +340,12 @@ def open_registry(
         )
     except AlreadyExists:
         # Device registry already exists. We just re-use the existing one.
-        print("Registry {} already exists - looking it up instead.".format(registry_id))
+        print(f"Registry {registry_id} already exists - looking it up instead.")
         response = get_registry(
             service_account_json, project_id, cloud_region, registry_id
         )
 
-    print("Registry {} opened: ".format(response.name))
+    print(f"Registry {response.name} opened: ")
     print(response)
 
 
@@ -453,10 +447,9 @@ def get_config_versions(
 
     for config in configs.device_configs:
         print(
-            "version: {}\n\tcloudUpdateTime: {}\n\t data: {}".format(
-                config.version, config.cloud_update_time, config.binary_data
-            )
+            f"version: {config.version}\n\tcloudUpdateTime: {config.cloud_update_time}\n\t data: {config.binary_data}"
         )
+
 
     return configs
 
@@ -466,9 +459,7 @@ def get_iam_permissions(service_account_json, project_id, cloud_region, registry
 
     registry_path = client.registry_path(project_id, cloud_region, registry_id)
 
-    policy = client.get_iam_policy(request={"resource": registry_path})
-
-    return policy
+    return client.get_iam_policy(request={"resource": registry_path})
 
 
 def set_iam_permissions(
@@ -517,10 +508,9 @@ def create_gateway(
         if device.id == gateway_id:
             exists = True
         print(
-            "Device: {} : {} : {} : {}".format(
-                device.id, device.num_id, device.config, device.gateway_config
-            )
+            f"Device: {device.id} : {device.num_id} : {device.config} : {device.gateway_config}"
         )
+
 
     with io.open(certificate_file) as f:
         certificate = f.read()
@@ -545,7 +535,7 @@ def create_gateway(
         res = client.create_device(
             request={"parent": parent, "device": device_template}
         )
-        print("Created Gateway {}".format(res))
+        print(f"Created Gateway {res}")
     else:
         print("Gateway exists, skipping")
 
@@ -565,7 +555,7 @@ def bind_device_to_gateway(
         request={"parent": parent, "gateway_id": gateway_id, "device_id": device_id}
     )
 
-    print("Device Bound! {}".format(res))
+    print(f"Device Bound! {res}")
 
 
 def unbind_device_from_gateway(
@@ -579,7 +569,7 @@ def unbind_device_from_gateway(
         request={"parent": parent, "gateway_id": gateway_id, "device_id": device_id}
     )
 
-    print("Device unbound: {}".format(res))
+    print(f"Device unbound: {res}")
 
 
 def list_gateways(service_account_json, project_id, cloud_region, registry_id):
@@ -592,9 +582,11 @@ def list_gateways(service_account_json, project_id, cloud_region, registry_id):
     devices = list(client.list_devices(request={"parent": path, "field_mask": mask}))
 
     for device in devices:
-        if device.gateway_config is not None:
-            if device.gateway_config.gateway_type == 1:
-                print("Gateway ID: {}\n\t{}".format(device.id, device))
+        if (
+            device.gateway_config is not None
+            and device.gateway_config.gateway_type == 1
+        ):
+            print(f"Gateway ID: {device.id}\n\t{device}")
 
 
 def list_devices_for_gateway(
@@ -616,7 +608,7 @@ def list_devices_for_gateway(
     found = False
     for device in devices:
         found = True
-        print("Device: {} : {}".format(device.num_id, device.id))
+        print(f"Device: {device.num_id} : {device.id}")
 
     if not found:
-        print("No devices bound to gateway {}".format(gateway_id))
+        print(f"No devices bound to gateway {gateway_id}")

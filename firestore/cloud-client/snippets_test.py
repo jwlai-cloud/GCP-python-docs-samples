@@ -32,7 +32,7 @@ class TestFirestoreClient(firestore.Client):
         self._super.__init__(*args, **kwargs)
 
     def collection(self, collection_name, *args, **kwargs):
-        collection_name += '-{}'.format(self._UNIQUE_STRING)
+        collection_name += f'-{self._UNIQUE_STRING}'
         return self._super.collection(collection_name, *args, **kwargs)
 
 
@@ -313,10 +313,9 @@ def test_delete_full_collection():
                          "however creation of the index is dependent on"
                          "having the admin client and definition integrated"
                          "into the test setup")
-# TODO: b/132092178
 def test_collection_group_query(db):
     museum_docs = snippets.collection_group_query(db)
-    names = set([museum.name for museum in museum_docs])
+    names = {museum.name for museum in museum_docs}
     assert names == {u'Legion of Honor', u'The Getty',
                      u'National Air and Space Museum',
                      u'National Museum of Nature and Science',

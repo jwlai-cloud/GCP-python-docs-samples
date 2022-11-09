@@ -28,18 +28,15 @@ def receive_authorized_get_request(request):
     request, decodes it using the google-auth client library, and returns
     back the email from the header to the caller.
     """
-    auth_header = request.headers.get("Authorization")
-    if auth_header:
-
+    if auth_header := request.headers.get("Authorization"):
         # split the auth type and value from the header.
         auth_type, creds = auth_header.split(" ", 1)
 
-        if auth_type.lower() == "bearer":
-            claims = jwt.decode(creds, verify=False)
-            return f"Hello, {claims['email']}!\n"
-
-        else:
+        if auth_type.lower() != "bearer":
             return f"Unhandled header format ({auth_type}).\n"
+        claims = jwt.decode(creds, verify=False)
+        return f"Hello, {claims['email']}!\n"
+
     return "Hello, anonymous user.\n"
 
 

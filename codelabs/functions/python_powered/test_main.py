@@ -36,4 +36,4 @@ class TestHello(unittest.TestCase):
         req = unittest.mock.Mock(args={"name": name})
 
         # Call tested function
-        assert main.hello_name(req) == "Hello {}!".format(name)
+        assert main.hello_name(req) == f"Hello {name}!"

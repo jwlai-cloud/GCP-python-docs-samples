@@ -63,8 +63,10 @@ BATCH_CONFIG = {
 }
 
 yesterday = datetime.datetime.combine(
-    datetime.datetime.today() - datetime.timedelta(1), datetime.datetime.min.time()
+    datetime.datetime.now() - datetime.timedelta(1),
+    datetime.datetime.min.time(),
 )
+
 
 default_dag_args = {
     # Setting start date as yesterday starts the DAG immediately when it is
@@ -124,9 +126,9 @@ with models.DAG(
 
     with TaskGroup("join_bq_datasets") as bq_join_group:
 
+        BQ_DESTINATION_TABLE_NAME = "holidays_weather_joined"
         for year in range(1997, 2022):
             BQ_DATASET_NAME = f"bigquery-public-data.ghcn_d.ghcnd_{str(year)}"
-            BQ_DESTINATION_TABLE_NAME = "holidays_weather_joined"
             # Specifically query a Chicago weather station
             WEATHER_HOLIDAYS_JOIN_QUERY = f"""
             SELECT Holidays.Date, Holiday, id, element, value

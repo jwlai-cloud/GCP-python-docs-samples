@@ -56,8 +56,7 @@ def get_args() -> dict:
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--bucket", required=True, type=str, help="GCS Bucket")
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def parse_tfrecord(example_proto: bytes, features_dict: dict) -> dict:

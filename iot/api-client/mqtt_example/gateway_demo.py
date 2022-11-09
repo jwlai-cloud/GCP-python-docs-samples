@@ -30,7 +30,7 @@ logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.CRITICAL)
 cloud_region = "us-central1"
 device_id_template = "test-device-{}"
 gateway_id_template = "test-gateway-{}"
-topic_id = "test-device-events-topic-{}".format(int(time.time()))
+topic_id = f"test-device-events-topic-{int(time.time())}"
 
 ca_cert_path = "resources/roots.pem"
 log_path = "config_log.csv"
@@ -47,10 +47,10 @@ if (
 project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
 service_account_json = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
 
-pubsub_topic = "projects/{}/topics/{}".format(project_id, topic_id)
-registry_id = "test-registry-{}".format(int(time.time()))
+pubsub_topic = f"projects/{project_id}/topics/{topic_id}"
+registry_id = f"test-registry-{int(time.time())}"
 
-base_url = "https://console.cloud.google.com/iot/locations/{}".format(cloud_region)
+base_url = f"https://console.cloud.google.com/iot/locations/{cloud_region}"
 edit_template = "{}/registries/{}?project={}".format(base_url, "{}", "{}")
 
 device_url_template = "{}/registries/{}/devices/{}?project={}".format(

@@ -62,41 +62,49 @@ def list_monitored_resource_descriptors(client, project_resource):
     request = client.projects().monitoredResourceDescriptors().list(
         name=project_resource)
     response = request.execute()
-    print('list_monitored_resource_descriptors response:\n{}'.format(
-        pprint.pformat(response)))
+    print(
+        f'list_monitored_resource_descriptors response:\n{pprint.pformat(response)}'
+    )
 
 
 def list_metric_descriptors(client, project_resource, metric):
     """Query to MetricDescriptors.list
     This lists the metric specified by METRIC.
     """
-    request = client.projects().metricDescriptors().list(
-        name=project_resource,
-        filter='metric.type="{}"'.format(metric))
+    request = (
+        client.projects()
+        .metricDescriptors()
+        .list(name=project_resource, filter=f'metric.type="{metric}"')
+    )
+
     response = request.execute()
-    print(
-        'list_metric_descriptors response:\n{}'.format(
-            pprint.pformat(response)))
+    print(f'list_metric_descriptors response:\n{pprint.pformat(response)}')
 
 
 def list_timeseries(client, project_resource, metric):
     """Query the TimeSeries.list API method.
     This lists all the timeseries created between START_TIME and END_TIME.
     """
-    request = client.projects().timeSeries().list(
-        name=project_resource,
-        filter='metric.type="{}"'.format(metric),
-        pageSize=3,
-        interval_startTime=get_start_time(),
-        interval_endTime=get_end_time())
+    request = (
+        client.projects()
+        .timeSeries()
+        .list(
+            name=project_resource,
+            filter=f'metric.type="{metric}"',
+            pageSize=3,
+            interval_startTime=get_start_time(),
+            interval_endTime=get_end_time(),
+        )
+    )
+
     response = request.execute()
-    print('list_timeseries response:\n{}'.format(pprint.pformat(response)))
+    print(f'list_timeseries response:\n{pprint.pformat(response)}')
 
 
 def main(project_id):
     client = googleapiclient.discovery.build('monitoring', 'v3')
 
-    project_resource = "projects/{}".format(project_id)
+    project_resource = f"projects/{project_id}"
     list_monitored_resource_descriptors(client, project_resource)
     # Metric to list
     metric = 'compute.googleapis.com/instance/cpu/usage_time'

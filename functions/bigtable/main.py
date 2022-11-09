@@ -24,19 +24,16 @@ def bigtable_read_data(request):
     table = instance.table(request.headers.get("table_id"))
 
     prefix = 'phone#'
-    end_key = prefix[:-1] + chr(ord(prefix[-1]) + 1)
-
     outputs = []
     row_set = RowSet()
+    end_key = prefix[:-1] + chr(ord(prefix[-1]) + 1)
     row_set.add_row_range_from_keys(prefix.encode("utf-8"),
                                     end_key.encode("utf-8"))
 
     rows = table.read_rows(row_set=row_set)
     for row in rows:
-        output = 'Rowkey: {}, os_build: {}'.format(
-            row.row_key.decode('utf-8'),
-            row.cells["stats_summary"]["os_build".encode('utf-8')][0]
-            .value.decode('utf-8'))
+        output = f"""Rowkey: {row.row_key.decode('utf-8')}, os_build: {row.cells["stats_summary"]["os_build".encode('utf-8')][0].value.decode('utf-8')}"""
+
         outputs.append(output)
 
     return '\n'.join(outputs)

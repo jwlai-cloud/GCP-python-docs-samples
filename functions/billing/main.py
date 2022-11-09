@@ -106,9 +106,7 @@ def stop_billing(data, context):
 
     projects = billing.projects()
 
-    billing_enabled = __is_billing_enabled(PROJECT_NAME, projects)
-
-    if billing_enabled:
+    if billing_enabled := __is_billing_enabled(PROJECT_NAME, projects):
         __disable_billing_for_project(PROJECT_NAME, projects)
     else:
         print('Billing already disabled')
@@ -181,8 +179,7 @@ def __list_running_instances(project_id, zone, instances):
         return []
 
     items = res['items']
-    running_names = [i['name'] for i in items if i['status'] == 'RUNNING']
-    return running_names
+    return [i['name'] for i in items if i['status'] == 'RUNNING']
 
 
 def __stop_instances(project_id, zone, instance_names, instances):

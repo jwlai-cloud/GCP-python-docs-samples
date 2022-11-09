@@ -28,12 +28,11 @@ def run_sample():
         project_id = 'projects/' + os.environ['GOOGLE_CLOUD_PROJECT']
         response = client_service.projects().companies().list(
             parent=project_id).execute()
-        print('Request Id: %s' %
-              response.get('metadata').get('requestId'))
+        print(f"Request Id: {response.get('metadata').get('requestId')}")
         print('Companies:')
         if response.get('companies') is not None:
             for company in response.get('companies'):
-                print('%s' % company.get('name'))
+                print(f"{company.get('name')}")
         print('')
 
     except Error as e:

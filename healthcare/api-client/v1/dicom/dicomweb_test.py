@@ -29,8 +29,8 @@ import dicomweb  # noqa
 location = "us-central1"
 project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
 
-dataset_id = "test_dataset-{}".format(uuid.uuid4())
-dicom_store_id = "test_dicom_store_{}".format(uuid.uuid4())
+dataset_id = f"test_dataset-{uuid.uuid4()}"
+dicom_store_id = f"test_dicom_store_{uuid.uuid4()}"
 
 RESOURCES = os.path.join(os.path.dirname(__file__), "resources")
 dcm_file_name = "dicom_00000001_000.dcm"
@@ -39,8 +39,8 @@ dcm_file = os.path.join(RESOURCES, dcm_file_name)
 # server and are part of the metadata of dcm_file
 study_uid = "1.3.6.1.4.1.11129.5.5.111396399361969898205364400549799252857604"
 series_uid = "1.3.6.1.4.1.11129.5.5.195628213694300498946760767481291263511724"
-instance_uid = "{}.{}".format(
-    "1.3.6.1.4.1.11129.5.5", "153751009835107614666834563294684339746480"
+instance_uid = (
+    '1.3.6.1.4.1.11129.5.5.153751009835107614666834563294684339746480'
 )
 
 
@@ -115,7 +115,7 @@ def test_dicom_store():
             # The API returns 403 when the dataset doesn't exist, so
             # if we try to delete a DICOM store when the parent dataset
             # doesn't exist, the server will return a 403.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print(
                     "Got exception {} while deleting DICOM store".format(
                         err.resp.status

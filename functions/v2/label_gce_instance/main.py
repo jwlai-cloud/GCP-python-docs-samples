@@ -30,8 +30,8 @@ instances_client = compute_v1.InstancesClient()
 # @param {object} cloudevent.data.protoPayload The Cloud Audit Log entry.
 def label_gce_instance(cloudevent):
     # Extract parameters from the CloudEvent + Cloud Audit Log data
-    payload = cloudevent.data.get('protoPayload', dict())
-    auth_info = payload.get('authenticationInfo', dict())
+    payload = cloudevent.data.get('protoPayload', {})
+    auth_info = payload.get('authenticationInfo', {})
     creator = auth_info.get('principalEmail')
 
     # Get relevant VM instance details from the cloudevent's `subject` property
@@ -65,13 +65,13 @@ def label_gce_instance(cloudevent):
     request_init = {
         'project': instance_project,
         'zone': instance_zone,
-        'instance': instance_name
-    }
-    request_init['instances_set_labels_request_resource'] = \
-        compute.InstancesSetLabelsRequest(
+        'instance': instance_name,
+        'instances_set_labels_request_resource': compute.InstancesSetLabelsRequest(
             label_fingerprint=instance.label_fingerprint,
-            labels={'creator': creator}
-        )
+            labels={'creator': creator},
+        ),
+    }
+
     request = compute.SetLabelsInstanceRequest(request_init)
 
     # Perform instance-labeling API call

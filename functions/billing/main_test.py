@@ -101,10 +101,7 @@ def test_limit_use(discovery_mock, ZONE, PROJECT_ID):
     projects_mock.execute = MagicMock(return_value={'billingEnabled': True})
 
     def discovery_mocker(x, *args, **kwargs):
-        if x == 'compute':
-            return instances_mock
-        else:
-            return projects_mock
+        return instances_mock if x == 'compute' else projects_mock
 
     discovery_mock.build = MagicMock(side_effect=discovery_mocker)
 
@@ -144,10 +141,7 @@ def test_limit_use_appengine(discovery_mock, ZONE, PROJECT_ID):
     appengine_mock.apps.return_value = apps_mock
 
     def discovery_mocker(x, *args, **kwargs):
-        if x == 'appengine':
-            return apps_mock
-        else:
-            return projects_mock
+        return apps_mock if x == 'appengine' else projects_mock
 
     discovery_mock.build = MagicMock(side_effect=discovery_mocker)
 

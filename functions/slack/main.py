@@ -48,9 +48,10 @@ def format_slack_message(query, response):
 
     message = {
         'response_type': 'in_channel',
-        'text': 'Query: {}'.format(query),
-        'attachments': []
+        'text': f'Query: {query}',
+        'attachments': [],
     }
+
 
     attachment = {}
     if entity:
@@ -63,8 +64,7 @@ def format_slack_message(query, response):
 
         attachment['color'] = '#3367d6'
         if name and description:
-            attachment['title'] = '{}: {}'.format(entity["name"],
-                                                  entity["description"])
+            attachment['title'] = f'{entity["name"]}: {entity["description"]}'
         elif name:
             attachment['title'] = name
         if url:

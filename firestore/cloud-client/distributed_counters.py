@@ -69,9 +69,6 @@ class Counter(object):
     # [START firestore_solution_sharded_counter_get]
     def get_count(self, doc_ref):
         """Return a total count across all shards."""
-        total = 0
         shards = doc_ref.collection("shards").list_documents()
-        for shard in shards:
-            total += shard.get().to_dict().get("count", 0)
-        return total
+        return sum(shard.get().to_dict().get("count", 0) for shard in shards)
     # [END firestore_solution_sharded_counter_get]

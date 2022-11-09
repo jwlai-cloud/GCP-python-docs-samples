@@ -27,12 +27,15 @@ EPOCH_TIME = 1650848400
 
 
 def test_sign_url(capsys: pytest.LogCaptureFixture) -> None:
-    results = []
-    results.append(snippets.sign_url(
-        'http://35.186.234.33/index.html',
-        'my-key',
-        'BxwXXNjeGaoWqjr7GHEymRJkP4SaOC12dTGixk7Yr8I=',
-        datetime.datetime.utcfromtimestamp(EPOCH_TIME)))
+    results = [
+        snippets.sign_url(
+            'http://35.186.234.33/index.html',
+            'my-key',
+            'BxwXXNjeGaoWqjr7GHEymRJkP4SaOC12dTGixk7Yr8I=',
+            datetime.datetime.utcfromtimestamp(EPOCH_TIME),
+        )
+    ]
+
     results.append(snippets.sign_url(
         'http://www.example.com/',
         'my-key',
@@ -55,13 +58,16 @@ def test_sign_url(capsys: pytest.LogCaptureFixture) -> None:
 
 
 def test_sign_url_prefix(capsys: pytest.LogCaptureFixture) -> None:
-    results = []
-    results.append(snippets.sign_url_prefix(
-        'http://35.186.234.33/index.html',
-        'http://35.186.234.33/',
-        'my-key',
-        'BxwXXNjeGaoWqjr7GHEymRJkP4SaOC12dTGixk7Yr8I=',
-        datetime.datetime.utcfromtimestamp(EPOCH_TIME)))
+    results = [
+        snippets.sign_url_prefix(
+            'http://35.186.234.33/index.html',
+            'http://35.186.234.33/',
+            'my-key',
+            'BxwXXNjeGaoWqjr7GHEymRJkP4SaOC12dTGixk7Yr8I=',
+            datetime.datetime.utcfromtimestamp(EPOCH_TIME),
+        )
+    ]
+
     results.append(snippets.sign_url_prefix(
         'http://www.example.com/',
         'http://www.example.com/',
@@ -90,12 +96,15 @@ def test_sign_url_prefix(capsys: pytest.LogCaptureFixture) -> None:
 
 
 def test_sign_cookie(capsys: pytest.LogCaptureFixture) -> None:
-    results = []
-    results.append(snippets.sign_cookie(
-        'http://35.186.234.33/index.html',
-        'my-key',
-        'BxwXXNjeGaoWqjr7GHEymRJkP4SaOC12dTGixk7Yr8I=',
-        datetime.datetime.utcfromtimestamp(EPOCH_TIME)))
+    results = [
+        snippets.sign_cookie(
+            'http://35.186.234.33/index.html',
+            'my-key',
+            'BxwXXNjeGaoWqjr7GHEymRJkP4SaOC12dTGixk7Yr8I=',
+            datetime.datetime.utcfromtimestamp(EPOCH_TIME),
+        )
+    ]
+
     results.append(snippets.sign_cookie(
         'http://www.example.com/foo/',
         'my-key',

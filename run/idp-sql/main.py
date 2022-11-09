@@ -66,7 +66,7 @@ def save_vote() -> Response:
     uid = request.uid
     time_cast = datetime.datetime.now(tz=datetime.timezone.utc)
     # Verify that the team is one of the allowed options
-    if team != "CATS" and team != "DOGS":
+    if team not in ["CATS", "DOGS"]:
         logger.warning(f"Invalid team: {team}")
         return Response(response="Invalid team specified.", status=400)
 
@@ -84,7 +84,7 @@ def save_vote() -> Response:
 
     return Response(
         status=200,
-        response="Vote successfully cast for '{}' at time {}!".format(team, time_cast),
+        response=f"Vote successfully cast for '{team}' at time {time_cast}!",
     )
 
 

@@ -35,9 +35,10 @@ def create_hl7v2_store(project_id, location, dataset_id, hl7v2_store_id):
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the HL7v2 store's parent dataset ID
     # hl7v2_store_id = 'my-hl7v2-store'  # replace with the HL7v2 store's ID
-    hl7v2_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    hl7v2_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
+
 
     request = (
         client.projects()
@@ -48,7 +49,7 @@ def create_hl7v2_store(project_id, location, dataset_id, hl7v2_store_id):
     )
 
     response = request.execute()
-    print("Created HL7v2 store: {}".format(hl7v2_store_id))
+    print(f"Created HL7v2 store: {hl7v2_store_id}")
     return response
 
 
@@ -75,10 +76,11 @@ def delete_hl7v2_store(project_id, location, dataset_id, hl7v2_store_id):
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the HL7v2 store's parent dataset
     # hl7v2_store_id = 'my-hl7v2-store'  # replace with the HL7v2 store's ID
-    hl7v2_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    hl7v2_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    hl7v2_store_name = "{}/hl7V2Stores/{}".format(hl7v2_store_parent, hl7v2_store_id)
+
+    hl7v2_store_name = f"{hl7v2_store_parent}/hl7V2Stores/{hl7v2_store_id}"
 
     request = (
         client.projects()
@@ -89,7 +91,7 @@ def delete_hl7v2_store(project_id, location, dataset_id, hl7v2_store_id):
     )
 
     response = request.execute()
-    print("Deleted HL7v2 store: {}".format(hl7v2_store_id))
+    print(f"Deleted HL7v2 store: {hl7v2_store_id}")
     return response
 
 
@@ -116,22 +118,24 @@ def get_hl7v2_store(project_id, location, dataset_id, hl7v2_store_id):
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the HL7v2 store's parent dataset
     # hl7v2_store_id = 'my-hl7v2-store'  # replace with the HL7v2 store's ID
-    hl7v2_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    hl7v2_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    hl7v2_store_name = "{}/hl7V2Stores/{}".format(hl7v2_store_parent, hl7v2_store_id)
+
+    hl7v2_store_name = f"{hl7v2_store_parent}/hl7V2Stores/{hl7v2_store_id}"
 
     hl7v2_stores = client.projects().locations().datasets().hl7V2Stores()
     hl7v2_store = hl7v2_stores.get(name=hl7v2_store_name).execute()
 
-    print("Name: {}".format(hl7v2_store.get("name")))
+    print(f'Name: {hl7v2_store.get("name")}')
     if hl7v2_store.get("notificationConfigs") is not None:
         print("Notification configs:")
         for notification_config in hl7v2_store.get("notificationConfigs"):
             print(
-                "\tPub/Sub topic: {}".format(notification_config.get("pubsubTopic")),
-                "\tFilter: {}".format(notification_config.get("filter")),
+                f'\tPub/Sub topic: {notification_config.get("pubsubTopic")}',
+                f'\tFilter: {notification_config.get("filter")}',
             )
+
 
     return hl7v2_store
 
@@ -158,9 +162,10 @@ def list_hl7v2_stores(project_id, location, dataset_id):
     # project_id = 'my-project'  # replace with your GCP project ID
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the HL7v2 store's parent dataset
-    hl7v2_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    hl7v2_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
+
 
     hl7v2_stores = (
         client.projects()
@@ -173,16 +178,15 @@ def list_hl7v2_stores(project_id, location, dataset_id):
     )
 
     for hl7v2_store in hl7v2_stores:
-        print("HL7v2 store:\nName: {}".format(hl7v2_store.get("name")))
+        print(f'HL7v2 store:\nName: {hl7v2_store.get("name")}')
         if hl7v2_store.get("notificationConfigs") is not None:
             print("Notification configs:")
             for notification_config in hl7v2_store.get("notificationConfigs"):
                 print(
-                    "\tPub/Sub topic: {}".format(
-                        notification_config.get("pubsubTopic")
-                    ),
-                    "\tFilter: {}".format(notification_config.get("filter")),
+                    f'\tPub/Sub topic: {notification_config.get("pubsubTopic")}',
+                    f'\tFilter: {notification_config.get("filter")}',
                 )
+
     return hl7v2_stores
 
 
@@ -209,10 +213,11 @@ def patch_hl7v2_store(project_id, location, dataset_id, hl7v2_store_id):
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the HL7v2 store's parent dataset
     # hl7v2_store_id = 'my-hl7v2-store'  # replace with the HL7v2 store's ID
-    hl7v2_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    hl7v2_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    hl7v2_store_name = "{}/hl7V2Stores/{}".format(hl7v2_store_parent, hl7v2_store_id)
+
+    hl7v2_store_name = f"{hl7v2_store_parent}/hl7V2Stores/{hl7v2_store_id}"
 
     # TODO(developer): Replace with the full URI of an existing Pub/Sub topic
     patch = {"notificationConfigs": None}
@@ -226,9 +231,7 @@ def patch_hl7v2_store(project_id, location, dataset_id, hl7v2_store_id):
     )
 
     response = request.execute()
-    print(
-        "Patched HL7v2 store {} with Cloud Pub/Sub topic: None".format(hl7v2_store_id)
-    )
+    print(f"Patched HL7v2 store {hl7v2_store_id} with Cloud Pub/Sub topic: None")
     return response
 
 
@@ -255,10 +258,11 @@ def get_hl7v2_store_iam_policy(project_id, location, dataset_id, hl7v2_store_id)
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the HL7v2 store's parent dataset
     # hl7v2_store_id = 'my-hl7v2-store'  # replace with the HL7v2 store's ID
-    hl7v2_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    hl7v2_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    hl7v2_store_name = "{}/hl7V2Stores/{}".format(hl7v2_store_parent, hl7v2_store_id)
+
+    hl7v2_store_name = f"{hl7v2_store_parent}/hl7V2Stores/{hl7v2_store_id}"
 
     request = (
         client.projects()
@@ -269,7 +273,7 @@ def get_hl7v2_store_iam_policy(project_id, location, dataset_id, hl7v2_store_id)
     )
     response = request.execute()
 
-    print("etag: {}".format(response.get("name")))
+    print(f'etag: {response.get("name")}')
     return response
 
 
@@ -310,10 +314,11 @@ def set_hl7v2_store_iam_policy(
     # hl7v2_store_id = 'my-hl7v2-store'  # replace with the HL7v2 store's ID
     # member = 'myemail@example.com'  # replace with an authorized member
     # role = 'roles/viewer'  # replace with a Healthcare API IAM role
-    hl7v2_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    hl7v2_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    hl7v2_store_name = "{}/hl7V2Stores/{}".format(hl7v2_store_parent, hl7v2_store_id)
+
+    hl7v2_store_name = f"{hl7v2_store_parent}/hl7V2Stores/{hl7v2_store_id}"
 
     policy = {"bindings": [{"role": role, "members": [member]}]}
 
@@ -329,8 +334,8 @@ def set_hl7v2_store_iam_policy(
     )
     response = request.execute()
 
-    print("etag: {}".format(response.get("name")))
-    print("bindings: {}".format(response.get("bindings")))
+    print(f'etag: {response.get("name")}')
+    print(f'bindings: {response.get("bindings")}')
     return response
 
 

@@ -34,9 +34,7 @@ def initialize_tracer(project_id):
         SimpleSpanProcessor(cloud_trace_exporter)
     )
     propagate.set_global_textmap(CloudTraceFormatPropagator())
-    opentelemetry_tracer = trace.get_tracer(__name__)
-
-    return opentelemetry_tracer
+    return trace.get_tracer(__name__)
 
 
 # [END trace_setup_python_configure]

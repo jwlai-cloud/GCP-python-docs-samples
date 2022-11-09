@@ -151,18 +151,17 @@ def project_id():
     Returns:
         str -- the project name
     """
-    project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
-
-    if not project_id:
+    if project_id := os.environ["GOOGLE_CLOUD_PROJECT"]:
+        return project_id
+    else:
         raise MissingProjectIdError(
             "Set the environment variable "
             + "GCLOUD_PROJECT to your Google Cloud Project Id."
         )
-    return project_id
 
 
 def project_name():
-    return "projects/" + project_id()
+    return f"projects/{project_id()}"
 
 
 if __name__ == "__main__":
@@ -252,9 +251,10 @@ if __name__ == "__main__":
         delete_uptime_check_config(args.name)
 
     elif args.command == "update-uptime-check-config":
-        if not args.display_name and not args.uptime_check_path:
-            print("Nothing to update.  Pass --display_name or " "--uptime_check_path.")
-        else:
+        if args.display_name or args.uptime_check_path:
             update_uptime_check_config(
                 args.name, args.display_name, args.uptime_check_path
             )
+
+        else:
+            print("Nothing to update.  Pass --display_name or " "--uptime_check_path.")

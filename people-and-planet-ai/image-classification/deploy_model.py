@@ -39,8 +39,7 @@ def create_model_endpoint(project: str, region: str, model_endpoint_name: str) -
     print(f"Creating model endpoint, operation: {response.operation.name}")
     model_endpoint = response.result()
     print(f"Model endpoint created\n{model_endpoint}")
-    model_endpoint_id = model_endpoint.name.split("/")[-1]
-    return model_endpoint_id
+    return model_endpoint.name.split("/")[-1]
 
 
 def deploy_model(

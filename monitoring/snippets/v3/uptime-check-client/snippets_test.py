@@ -25,7 +25,7 @@ import snippets
 
 
 def random_name(length):
-    return "".join([random.choice(string.ascii_lowercase) for i in range(length)])
+    return "".join([random.choice(string.ascii_lowercase) for _ in range(length)])
 
 
 class UptimeFixture:
@@ -68,7 +68,7 @@ def test_create_and_delete(capsys):
 def test_update_uptime_config(capsys):
     # create and delete happen in uptime fixture.
     new_display_name = random_name(10)
-    new_uptime_check_path = "/" + random_name(10)
+    new_uptime_check_path = f"/{random_name(10)}"
     with UptimeFixture() as fixture:
         # We sometimes see the permission error saying the resource
         # may not exist. Weirdly DeadlineExceeded instance is raised

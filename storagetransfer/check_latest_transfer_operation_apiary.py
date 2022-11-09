@@ -37,24 +37,19 @@ def check_latest_transfer_operation(project_id, job_name):
         .get(projectId=project_id, jobName=job_name)
         .execute()
     )
-    latestOperationName = transferJob.get("latestOperationName")
-
-    if latestOperationName:
+    if latestOperationName := transferJob.get("latestOperationName"):
         result = (
             storagetransfer.transferOperations().get(name=latestOperationName).execute()
         )
         print(
-            "The latest operation for job"
-            + job_name
+            f"The latest operation for job{job_name}"
             + " is: {}".format(json.dumps(result, indent=4, sort_keys=True))
         )
 
+
     else:
         print(
-            "Transfer job "
-            + job_name
-            + " does not have an operation scheduled yet, "
-            + "try again once the job starts running."
+            f"Transfer job {job_name} does not have an operation scheduled yet, try again once the job starts running."
         )
 
 

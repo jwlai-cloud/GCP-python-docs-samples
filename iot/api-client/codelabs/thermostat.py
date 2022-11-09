@@ -30,7 +30,7 @@ device_id = sys.argv[1]
 if not device_id:
     sys.exit('The device id must be specified.')
 
-print('Bringing up device {}'.format(device_id))
+print(f'Bringing up device {device_id}')
 
 
 # return message received
@@ -54,9 +54,9 @@ def run_action(action):
     message = make_message(device_id, action)
     if not message:
         return
-    print('Sending data: {}'.format(message))
+    print(f'Sending data: {message}')
     event_response = send_command(client_sock, message.encode())
-    print('Response {}'.format(event_response.decode("utf-8")))
+    print(f'Response {event_response.decode("utf-8")}')
 
 
 def main():
@@ -77,14 +77,26 @@ def main():
             humidity = "{:.3f}".format(h)
             temperature = "{:.3f}".format(temperature_f)
             sys.stdout.write(
-                '\r>> ' + bcolors.CGREEN + bcolors.CBOLD +
-                'Temp: {} F, Hum: {}%'.format(temperature, humidity) +
-                bcolors.ENDC + ' <<')
+                (
+                    (
+                        (
+                            '\r>> '
+                            + bcolors.CGREEN
+                            + bcolors.CBOLD
+                            + f'Temp: {temperature} F, Hum: {humidity}%'
+                        )
+                        + bcolors.ENDC
+                    )
+                    + ' <<'
+                )
+            )
+
             sys.stdout.flush()
 
             message = make_message(
-                device_id, 'event', 'temperature={}, humidity={}'.format(t, h)
-                ).encode()
+                device_id, 'event', f'temperature={t}, humidity={h}'
+            ).encode()
+
 
             send_command(client_sock, message, False)
             time.sleep(2)

@@ -24,14 +24,7 @@ def quickstart_new_instance():
     # [START firestore_setup_client_create_with_project_id]
     from google.cloud import firestore
 
-    # The `project` parameter is optional and represents which project the client
-    # will act on behalf of. If not supplied, the client falls back to the default
-    # project inferred from the environment.
-    db = firestore.Client(project='my-project-id')
-    # [END firestore_setup_client_create_with_project_id]
-    # [END firestore_setup_client_create]
-
-    return db
+    return firestore.Client(project='my-project-id')
 
 
 def quickstart_add_data_one():
@@ -307,11 +300,7 @@ def structure_collection_ref():
 
 def structure_doc_ref_alternate():
     db = firestore.Client()
-    # [START firestore_data_reference_document_path]
-    a_lovelace_ref = db.document(u'users/alovelace')
-    # [END firestore_data_reference_document_path]
-
-    return a_lovelace_ref
+    return db.document(u'users/alovelace')
 
 
 def structure_subcollection_ref():
@@ -489,11 +478,7 @@ def compound_query_example():
     # Create a reference to the cities collection
     cities_ref = db.collection(u'cities')
 
-    # Create a query against the collection
-    query_ref = cities_ref.where(u'state', u'==', u'CA')
-    # [END firestore_query_filter_eq_string]
-
-    return query_ref
+    return cities_ref.where(u'state', u'==', u'CA')
 
 
 def compound_query_simple():
@@ -622,24 +607,16 @@ def cursor_simple_start_at():
     db = firestore.Client()
     # [START firestore_query_cursor_start_at_field_value_single]
     cities_ref = db.collection(u'cities')
-    query_start_at = cities_ref.order_by(u'population').start_at({
-        u'population': 1000000
-    })
-    # [END firestore_query_cursor_start_at_field_value_single]
-
-    return query_start_at
+    return cities_ref.order_by(u'population').start_at(
+        {u'population': 1000000}
+    )
 
 
 def cursor_simple_end_at():
     db = firestore.Client()
     # [START firestore_query_cursor_end_at_field_value_single]
     cities_ref = db.collection(u'cities')
-    query_end_at = cities_ref.order_by(u'population').end_at({
-        u'population': 1000000
-    })
-    # [END firestore_query_cursor_end_at_field_value_single]
-
-    return query_end_at
+    return cities_ref.order_by(u'population').end_at({u'population': 1000000})
 
 
 def snapshot_cursors():
@@ -673,19 +650,11 @@ def cursor_paginate():
     # multiple cities have the exact same population value
     last_pop = last_doc.to_dict()[u'population']
 
-    next_query = (
-        cities_ref
-        .order_by(u'population')
-        .start_after({
-            u'population': last_pop
-        })
+    return (
+        cities_ref.order_by(u'population')
+        .start_after({u'population': last_pop})
         .limit(3)
     )
-    # Use the query for pagination
-    # ...
-    # [END firestore_query_cursor_pagination]
-
-    return next_query
 
 
 def listen_document():
@@ -944,10 +913,9 @@ def array_contains_any_queries(db):
     # [START firestore_query_filter_array_contains_any]
     cities_ref = db.collection(u'cities')
 
-    query = cities_ref.where(
+    return cities_ref.where(
         u'regions', u'array_contains_any', [u'west_coast', u'east_coast']
     )
-    return query
     # [END firestore_query_filter_array_contains_any]
 
 
@@ -955,8 +923,7 @@ def in_query_without_array(db):
     # [START firestore_query_filter_in]
     cities_ref = db.collection(u'cities')
 
-    query = cities_ref.where(u'country', u'in', [u'USA', u'Japan'])
-    return query
+    return cities_ref.where(u'country', u'in', [u'USA', u'Japan'])
     # [END firestore_query_filter_in]
 
 
@@ -964,10 +931,9 @@ def in_query_with_array(db):
     # [START firestore_query_filter_in_with_array]
     cities_ref = db.collection(u'cities')
 
-    query = cities_ref.where(
+    return cities_ref.where(
         u'regions', u'in', [[u'west_coast'], [u'east_coast']]
     )
-    return query
     # [END firestore_query_filter_in_with_array]
 
 

@@ -29,14 +29,16 @@ import attribute_definitions  # noqa
 location = "us-central1"
 project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
 
-dataset_id = "test-dataset-{}".format(uuid.uuid4())
-consent_store_id = "test-consent-store-{}".format(uuid.uuid4())
-resource_attribute_definition_id = "test_resource_attribute_definition_id_{}".format(
-    uuid.uuid4().hex[:5]
+dataset_id = f"test-dataset-{uuid.uuid4()}"
+consent_store_id = f"test-consent-store-{uuid.uuid4()}"
+resource_attribute_definition_id = (
+    f"test_resource_attribute_definition_id_{uuid.uuid4().hex[:5]}"
 )
-request_attribute_definition_id = "test_request_attribute_definition_id_{}".format(
-    uuid.uuid4().hex[:5]
+
+request_attribute_definition_id = (
+    f"test_request_attribute_definition_id_{uuid.uuid4().hex[:5]}"
 )
+
 
 description = "whether the data is de-identifiable"
 
@@ -112,7 +114,7 @@ def test_consent_store():
             # The API returns 403 when the dataset doesn't exist, so
             # if we try to delete a consent store when the parent dataset
             # doesn't exist, the server will return a 403.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print(
                     "Got exception {} while deleting consent store".format(
                         err.resp.status

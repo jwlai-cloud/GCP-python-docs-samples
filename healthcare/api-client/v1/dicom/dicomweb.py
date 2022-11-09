@@ -51,11 +51,10 @@ def dicomweb_store_instance(project_id, location, dataset_id, dicom_store_id, dc
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # dicom_store_id = 'my-dicom-store' # replace with the DICOM store ID
     # dcm_file = 'dicom000_0001.dcm'  # replace with a DICOM file
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    dicomweb_path = "{}/datasets/{}/dicomStores/{}/dicomWeb/studies".format(
-        url, dataset_id, dicom_store_id
-    )
+    dicomweb_path = f"{url}/datasets/{dataset_id}/dicomStores/{dicom_store_id}/dicomWeb/studies"
+
 
     with open(dcm_file, "rb") as dcm:
         dcm_content = dcm.read()
@@ -106,11 +105,10 @@ def dicomweb_search_instance(project_id, location, dataset_id, dicom_store_id):
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # dicom_store_id = 'my-dicom-store' # replace with the DICOM store ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    dicomweb_path = "{}/datasets/{}/dicomStores/{}/dicomWeb/instances".format(
-        url, dataset_id, dicom_store_id
-    )
+    dicomweb_path = f"{url}/datasets/{dataset_id}/dicomStores/{dicom_store_id}/dicomWeb/instances"
+
 
     # Sets required application/dicom+json; charset=utf-8 header on the request
     headers = {"Content-Type": "application/dicom+json; charset=utf-8"}
@@ -165,11 +163,10 @@ def dicomweb_retrieve_study(
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # dicom_store_id = 'my-dicom-store' # replace with the DICOM store ID
     # study_uid = '1.3.6.1.4.1.5062.55.1.227'  # replace with the study UID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    dicomweb_path = "{}/datasets/{}/dicomStores/{}/dicomWeb/studies/{}".format(
-        url, dataset_id, dicom_store_id, study_uid
-    )
+    dicomweb_path = f"{url}/datasets/{dataset_id}/dicomStores/{dicom_store_id}/dicomWeb/studies/{study_uid}"
+
 
     # When specifying the output file, use an extension like ".multipart."
     # Then, parse the downloaded multipart file to get each individual
@@ -182,7 +179,7 @@ def dicomweb_retrieve_study(
 
     with open(file_name, "wb") as f:
         f.write(response.content)
-        print("Retrieved study and saved to {} in current directory".format(file_name))
+        print(f"Retrieved study and saved to {file_name} in current directory")
 
     return response
 
@@ -223,11 +220,10 @@ def dicomweb_search_studies(project_id, location, dataset_id, dicom_store_id):
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # dicom_store_id = 'my-dicom-store' # replace with the DICOM store ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    dicomweb_path = "{}/datasets/{}/dicomStores/{}/dicomWeb/studies".format(
-        url, dataset_id, dicom_store_id
-    )
+    dicomweb_path = f"{url}/datasets/{dataset_id}/dicomStores/{dicom_store_id}/dicomWeb/studies"
+
 
     # Refine your search by appending DICOM tags to the
     # request in the form of query parameters. This sample
@@ -238,7 +234,7 @@ def dicomweb_search_studies(project_id, location, dataset_id, dicom_store_id):
 
     response.raise_for_status()
 
-    print("Studies found: response is {}".format(response))
+    print(f"Studies found: response is {response}")
 
     # Uncomment the following lines to process the response as JSON.
     # patients = response.json()
@@ -295,15 +291,12 @@ def dicomweb_retrieve_instance(
     # study_uid = '1.3.6.1.4.1.5062.55.1.2270943358.716200484.1363785608958.61.0'  # replace with the study UID
     # series_uid = '2.24.52329571877967561426579904912379710633'  # replace with the series UID
     # instance_uid = '1.3.6.2.4.2.14619.5.2.1.6280.6001.129311971280445372188125744148'  # replace with the instance UID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    dicom_store_path = "{}/datasets/{}/dicomStores/{}".format(
-        url, dataset_id, dicom_store_id
-    )
+    dicom_store_path = f"{url}/datasets/{dataset_id}/dicomStores/{dicom_store_id}"
 
-    dicomweb_path = "{}/dicomWeb/studies/{}/series/{}/instances/{}".format(
-        dicom_store_path, study_uid, series_uid, instance_uid
-    )
+    dicomweb_path = f"{dicom_store_path}/dicomWeb/studies/{study_uid}/series/{series_uid}/instances/{instance_uid}"
+
 
     file_name = "instance.dcm"
 
@@ -315,10 +308,9 @@ def dicomweb_retrieve_instance(
     with open(file_name, "wb") as f:
         f.write(response.content)
         print(
-            "Retrieved DICOM instance and saved to {} in current directory".format(
-                file_name
-            )
+            f"Retrieved DICOM instance and saved to {file_name} in current directory"
         )
+
 
     return response
 
@@ -370,15 +362,12 @@ def dicomweb_retrieve_rendered(
     # study_uid = '1.3.6.1.4.1.5062.55.1.2270943358.716200484.1363785608958.61.0'  # replace with the study UID
     # series_uid = '2.24.52329571877967561426579904912379710633'  # replace with the series UID
     # instance_uid = '1.3.6.2.4.2.14619.5.2.1.6280.6001.129311971280445372188125744148'  # replace with the instance UID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    dicom_store_path = "{}/datasets/{}/dicomStores/{}".format(
-        url, dataset_id, dicom_store_id
-    )
+    dicom_store_path = f"{url}/datasets/{dataset_id}/dicomStores/{dicom_store_id}"
 
-    dicomweb_path = "{}/dicomWeb/studies/{}/series/{}/instances/{}/rendered".format(
-        dicom_store_path, study_uid, series_uid, instance_uid
-    )
+    dicomweb_path = f"{dicom_store_path}/dicomWeb/studies/{study_uid}/series/{series_uid}/instances/{instance_uid}/rendered"
+
 
     file_name = "rendered_image.png"
 
@@ -390,10 +379,9 @@ def dicomweb_retrieve_rendered(
     with open(file_name, "wb") as f:
         f.write(response.content)
         print(
-            "Retrieved rendered image and saved to {} in current directory".format(
-                file_name
-            )
+            f"Retrieved rendered image and saved to {file_name} in current directory"
         )
+
 
     return response
 
@@ -436,11 +424,10 @@ def dicomweb_delete_study(project_id, location, dataset_id, dicom_store_id, stud
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # dicom_store_id = 'my-dicom-store' # replace with the DICOM store ID
     # study_uid = '1.3.6.1.4.1.5062.55.1.2270943358.716200484.1363785608958.61.0'  # replace with the study UID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    dicomweb_path = "{}/datasets/{}/dicomStores/{}/dicomWeb/studies/{}".format(
-        url, dataset_id, dicom_store_id, study_uid
-    )
+    dicomweb_path = f"{url}/datasets/{dataset_id}/dicomStores/{dicom_store_id}/dicomWeb/studies/{study_uid}"
+
 
     # Sets the required application/dicom+json; charset=utf-8 header on the request
     headers = {"Content-Type": "application/dicom+json; charset=utf-8"}

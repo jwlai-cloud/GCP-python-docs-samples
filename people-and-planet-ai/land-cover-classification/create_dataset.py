@@ -169,7 +169,7 @@ def run_tensorflow(
         beam_args: Apache Beam command line arguments to parse as pipeline options.
     """
     # Equally divide the number of points by the number of concurrent requests.
-    num_points = max(int(points_per_class / max_requests), 1)
+    num_points = max(points_per_class // max_requests, 1)
 
     beam_options = PipelineOptions(
         beam_args,

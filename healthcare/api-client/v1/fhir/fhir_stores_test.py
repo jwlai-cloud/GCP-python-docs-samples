@@ -32,15 +32,15 @@ import fhir_stores  # noqa
 location = "us-central1"
 project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
 
-dataset_id = "test_dataset_{}".format(uuid.uuid4())
-fhir_store_id = "test_fhir_store-{}".format(uuid.uuid4())
+dataset_id = f"test_dataset_{uuid.uuid4()}"
+fhir_store_id = f"test_fhir_store-{uuid.uuid4()}"
 version = "R4"
 
 gcs_uri = os.environ["CLOUD_STORAGE_BUCKET"]
 RESOURCES = os.path.join(os.path.dirname(__file__), "resources")
 source_file_name = "Patient.json"
 resource_file = os.path.join(RESOURCES, source_file_name)
-import_object = "{}/{}".format(gcs_uri, source_file_name)
+import_object = f"{gcs_uri}/{source_file_name}"
 
 
 BACKOFF_MAX_TIME = 750
@@ -85,7 +85,7 @@ def test_dataset():
             datasets.delete_dataset(project_id, location, dataset_id)
         except HttpError as err:
             # The API returns 403 when the dataset doesn't exist.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print("Got exception {} while deleting dataset".format(err.resp.status))
             else:
                 raise
@@ -128,7 +128,7 @@ def test_fhir_store():
             # The API returns 403 when the dataset doesn't exist, so
             # if we try to delete a FHIR store when the parent dataset
             # doesn't exist, the server will return a 403.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print(
                     "Got exception {} while deleting FHIR store".format(err.resp.status)
                 )
@@ -154,7 +154,7 @@ def crud_fhir_store_id():
             # The API returns 403 when the dataset doesn't exist, so
             # if we try to delete a FHIR store when the parent dataset
             # doesn't exist, the server will return a 403.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print(
                     "Got exception {} while deleting FHIR store".format(err.resp.status)
                 )

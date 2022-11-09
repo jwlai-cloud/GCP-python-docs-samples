@@ -19,7 +19,7 @@ import grantable_roles
 
 def test_grantable_roles(capsys):
     project = os.environ['GOOGLE_CLOUD_PROJECT']
-    resource = '//cloudresourcemanager.googleapis.com/projects/' + project
+    resource = f'//cloudresourcemanager.googleapis.com/projects/{project}'
     grantable_roles.view_grantable_roles(resource)
     out, _ = capsys.readouterr()
     assert 'Title:' in out

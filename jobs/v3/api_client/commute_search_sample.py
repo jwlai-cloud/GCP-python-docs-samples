@@ -40,7 +40,7 @@ def commute_search(client_service, company_name):
     }
     job_query = {'commute_filter': commute_preference}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'job_query': job_query,
         'request_metadata': request_metadata,

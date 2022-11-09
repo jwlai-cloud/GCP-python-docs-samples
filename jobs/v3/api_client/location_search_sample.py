@@ -35,7 +35,7 @@ def basic_location_search(client_service, company_name, location, distance):
     location_filter = {'address': location, 'distance_in_miles': distance}
     job_query = {'location_filters': [location_filter]}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'job_query': job_query,
         'request_metadata': request_metadata,
@@ -58,7 +58,7 @@ def keyword_location_search(client_service, company_name, location, distance,
     location_filter = {'address': location, 'distance_in_miles': distance}
     job_query = {'location_filters': [location_filter], 'query': keyword}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'job_query': job_query,
         'request_metadata': request_metadata,
@@ -80,7 +80,7 @@ def city_location_search(client_service, company_name, location):
     location_filter = {'address': location}
     job_query = {'location_filters': [location_filter]}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'job_query': job_query,
         'request_metadata': request_metadata,
@@ -104,7 +104,7 @@ def multi_locations_search(client_service, company_name, location1, distance1,
     location_filter2 = {'address': location2}
     job_query = {'location_filters': [location_filter1, location_filter2]}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'job_query': job_query,
         'request_metadata': request_metadata,
@@ -126,7 +126,7 @@ def broadening_location_search(client_service, company_name, location):
     location_filter = {'address': location}
     job_query = {'location_filters': [location_filter]}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'job_query': job_query,
         'request_metadata': request_metadata,

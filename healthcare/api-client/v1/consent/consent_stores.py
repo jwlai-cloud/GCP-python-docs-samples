@@ -78,12 +78,11 @@ def delete_consent_store(
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the consent store's parent dataset ID
     # consent_store_id = 'my-consent-store'  # replace with the consent store's ID
-    consent_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    consent_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    consent_store_name = "{}/consentStores/{}".format(
-        consent_store_parent, consent_store_id
-    )
+
+    consent_store_name = f"{consent_store_parent}/consentStores/{consent_store_id}"
 
     request = (
         client.projects()
@@ -94,7 +93,7 @@ def delete_consent_store(
     )
 
     response = request.execute()
-    print("Deleted consent store: {}".format(consent_store_id))
+    print(f"Deleted consent store: {consent_store_id}")
     return response
 
 
@@ -125,12 +124,11 @@ def get_consent_store(
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the consent store's parent dataset ID
     # consent_store_id = 'my-consent-store'  # replace with the consent store's ID
-    consent_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    consent_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    consent_store_name = "{}/consentStores/{}".format(
-        consent_store_parent, consent_store_id
-    )
+
+    consent_store_name = f"{consent_store_parent}/consentStores/{consent_store_id}"
 
     consent_stores = client.projects().locations().datasets().consentStores()
     consent_store = consent_stores.get(name=consent_store_name).execute()
@@ -160,9 +158,10 @@ def list_consent_stores(project_id, location, dataset_id):
     # project_id = 'my-project'  # replace with your GCP project ID
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the consent store's parent dataset ID
-    consent_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    consent_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
+
 
     consent_stores = (
         client.projects()
@@ -209,12 +208,11 @@ def patch_consent_store(
     # dataset_id = 'my-dataset'  # replace with the consent store's parent dataset ID
     # consent_store_id = 'my-consent-store'  # replace with the consent store's ID
     # default_consent_ttl = '172800s'  # replace with a default TTL
-    consent_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    consent_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    consent_store_name = "{}/consentStores/{}".format(
-        consent_store_parent, consent_store_id
-    )
+
+    consent_store_name = f"{consent_store_parent}/consentStores/{consent_store_id}"
 
     # Updates the default time-to-live (TTL) of consents in the consent store.
     # Updating the TTL does not affect the expiration time of existing consents.
@@ -233,10 +231,9 @@ def patch_consent_store(
 
     response = request.execute()
     print(
-        "Patched consent store {} with new default consent TTL: {}".format(
-            consent_store_id, default_consent_ttl
-        )
+        f"Patched consent store {consent_store_id} with new default consent TTL: {default_consent_ttl}"
     )
+
 
     return response
 
@@ -265,12 +262,11 @@ def get_consent_store_iam_policy(
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the consent store's parent dataset ID
     # consent_store_id = 'my-consent-store'  # replace with the consent store's ID
-    consent_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    consent_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    consent_store_name = "{}/consentStores/{}".format(
-        consent_store_parent, consent_store_id
-    )
+
+    consent_store_name = f"{consent_store_parent}/consentStores/{consent_store_id}"
 
     request = (
         client.projects()
@@ -281,7 +277,7 @@ def get_consent_store_iam_policy(
     )
     response = request.execute()
 
-    print("etag: {}".format(response.get("name")))
+    print(f'etag: {response.get("name")}')
     return response
 
 
@@ -327,12 +323,11 @@ def set_consent_store_iam_policy(
     # consent_store_id = 'my-consent-store'  # replace with the consent store's ID
     # member = 'myemail@example.com'  # replace with an authorized member
     # role = 'roles/viewer'  # replace with a Healthcare API IAM role
-    consent_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    consent_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    consent_store_name = "{}/consentStores/{}".format(
-        consent_store_parent, consent_store_id
-    )
+
+    consent_store_name = f"{consent_store_parent}/consentStores/{consent_store_id}"
 
     policy = {"bindings": [{"role": role, "members": [member]}]}
 
@@ -348,8 +343,8 @@ def set_consent_store_iam_policy(
     )
     response = request.execute()
 
-    print("etag: {}".format(response.get("name")))
-    print("bindings: {}".format(response.get("bindings")))
+    print(f'etag: {response.get("name")}')
+    print(f'bindings: {response.get("bindings")}')
     return response
 
 

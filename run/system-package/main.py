@@ -34,11 +34,11 @@ def index():
         return response
 
     except Exception as e:
-        print("error: {}".format(e))
+        print(f"error: {e}")
 
         # If no graphviz definition or bad graphviz def, return 400
         if "syntax" in str(e):
-            return "Bad Request: {}".format(e), 400
+            return f"Bad Request: {e}", 400
 
         return "Internal Server Error", 500
 
@@ -63,15 +63,12 @@ def create_diagram(dot):
         "-Tpng",
     ]
 
-    # Uses local `dot` binary from Graphviz:
-    # https://graphviz.gitlab.io
-    image = subprocess.run(
+    if image := subprocess.run(
         ["dot"] + dot_args, input=dot.encode("utf-8"), stdout=subprocess.PIPE
-    ).stdout
-
-    if not image:
+    ).stdout:
+        return image
+    else:
         raise Exception("syntax: bad graphviz definition provided")
-    return image
 
 
 # [END run_system_package_exec]

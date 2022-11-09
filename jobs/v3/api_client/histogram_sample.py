@@ -46,7 +46,7 @@ def histogram_search(client_service, company_name):
         'histogram_facets': histogram_facets
     }
     if company_name is not None:
-        request.update({'job_query': {'company_names': [company_name]}})
+        request['job_query'] = {'company_names': [company_name]}
     response = client_service.projects().jobs().search(
         parent=parent, body=request).execute()
     print(response)

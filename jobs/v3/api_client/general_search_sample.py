@@ -34,7 +34,7 @@ def basic_keyword_search(client_service, company_name, keyword):
     }
     job_query = {'query': keyword}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'search_mode': 'JOB_SEARCH',
         'request_metadata': request_metadata,
@@ -56,7 +56,7 @@ def category_search(client_service, company_name, categories):
     }
     job_query = {'job_categories': categories}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'search_mode': 'JOB_SEARCH',
         'request_metadata': request_metadata,
@@ -78,7 +78,7 @@ def employment_types_search(client_service, company_name, employment_types):
     }
     job_query = {'employment_types': employment_types}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'search_mode': 'JOB_SEARCH',
         'request_metadata': request_metadata,
@@ -100,7 +100,7 @@ def date_range_search(client_service, company_name, date_range):
     }
     job_query = {'publish_time_range': date_range}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'search_mode': 'JOB_SEARCH',
         'request_metadata': request_metadata,
@@ -122,7 +122,7 @@ def language_code_search(client_service, company_name, language_codes):
     }
     job_query = {'language_codes': language_codes}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'search_mode': 'JOB_SEARCH',
         'request_metadata': request_metadata,
@@ -145,7 +145,7 @@ def company_display_name_search(client_service, company_name,
     }
     job_query = {'company_display_names': company_display_names}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'search_mode': 'JOB_SEARCH',
         'request_metadata': request_metadata,
@@ -183,7 +183,7 @@ def compensation_search(client_service, company_name):
     }
     job_query = {'compensation_filter': compensation_filter}
     if company_name is not None:
-        job_query.update({'company_names': [company_name]})
+        job_query['company_names'] = [company_name]
     request = {
         'search_mode': 'JOB_SEARCH',
         'request_metadata': request_metadata,

@@ -34,8 +34,7 @@ MEMORYSTORE_REDIS_NAME = "static-test-instance"
 
 @pytest.fixture
 def redis_host():
-    # Get the Redis instance's IP
-    redis_host = subprocess.run(
+    yield subprocess.run(
         [
             "gcloud",
             "redis",
@@ -48,9 +47,8 @@ def redis_host():
             PROJECT,
         ],
         stdout=subprocess.PIPE,
-        check=True
+        check=True,
     ).stdout.strip().decode()
-    yield redis_host
 
     # no deletion needs to happen, this is a "get" of a static instance
 

@@ -31,9 +31,7 @@ INSTANCE_NAME = os.getenv('FUNCTIONS_COMPUTE_INSTANCE')
 
 instances_client = compute_v1.InstancesClient()
 
-# Avoid race conditions from parallel multi-Python-version CI builds
-PYTHON_VERSION = os.getenv('RUN_TESTS_SESSION', '').replace('.', '')
-if PYTHON_VERSION:
+if PYTHON_VERSION := os.getenv('RUN_TESTS_SESSION', '').replace('.', ''):
     INSTANCE_NAME += f'-{PYTHON_VERSION}'
 
 

@@ -26,7 +26,7 @@ import pytest
 import deploy_model
 import predict
 
-SUFFIX = uuid.uuid4().hex[0:6]
+SUFFIX = uuid.uuid4().hex[:6]
 PROJECT = os.environ["GOOGLE_CLOUD_PROJECT"]
 BUCKET_NAME = f"wildlife-insights-{SUFFIX}"
 BIGQUERY_DATASET = f"wildlife_insights_{SUFFIX}"

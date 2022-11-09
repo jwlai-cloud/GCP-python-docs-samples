@@ -37,11 +37,9 @@ def list_alert_policies(project_name):
     client = monitoring_v3.AlertPolicyServiceClient()
     policies = client.list_alert_policies(name=project_name)
     print(
-        str(
-            tabulate.tabulate(
-                [(policy.name, policy.display_name) for policy in policies],
-                ("name", "display_name"),
-            )
+        tabulate.tabulate(
+            [(policy.name, policy.display_name) for policy in policies],
+            ("name", "display_name"),
         )
     )
 
@@ -158,14 +156,14 @@ def delete_notification_channels(project_name, channel_ids, force=None):
 
     channel_client = monitoring_v3.NotificationChannelServiceClient()
     for channel_id in channel_ids:
-        channel_name = "{}/notificationChannels/{}".format(project_name, channel_id)
+        channel_name = f"{project_name}/notificationChannels/{channel_id}"
         try:
             channel_client.delete_notification_channel(name=channel_name, force=force)
-            print("Channel {} deleted".format(channel_name))
+            print(f"Channel {channel_name} deleted")
         except ValueError:
             print("The parameters are invalid")
         except Exception as e:
-            print("API call failed: {}".format(e))
+            print(f"API call failed: {e}")
 
 
 # [END monitoring_alert_delete_channel]
@@ -191,9 +189,7 @@ def backup(project_name, backup_filename):
     }
     json.dump(record, open(backup_filename, "wt"), cls=ProtoEncoder, indent=2)
     print(
-        "Backed up alert policies and notification channels to {}.".format(
-            backup_filename
-        )
+        f"Backed up alert policies and notification channels to {backup_filename}."
     )
 
 
@@ -225,10 +221,9 @@ def restore(project_name, backup_filename):
             which the alert policies will be restored.
     """
     print(
-        "Loading alert policies and notification channels from {}.".format(
-            backup_filename
-        )
+        f"Loading alert policies and notification channels from {backup_filename}."
     )
+
     record = json.load(open(backup_filename, "rt"))
     is_same_project = project_name == record["project_name"]
     # Convert dicts to AlertPolicies.
@@ -285,8 +280,7 @@ def restore(project_name, backup_filename):
 
         # Update old channel names with new channel names.
         for i, channel in enumerate(policy.notification_channels):
-            new_channel = channel_name_map.get(channel)
-            if new_channel:
+            if new_channel := channel_name_map.get(channel):
                 policy.notification_channels[i] = new_channel
 
         updated = False
@@ -334,18 +328,17 @@ def project_id():
     Returns:
         str -- the project name
     """
-    project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
-
-    if not project_id:
+    if project_id := os.environ["GOOGLE_CLOUD_PROJECT"]:
+        return project_id
+    else:
         raise MissingProjectIdError(
             "Set the environment variable "
             + "GCLOUD_PROJECT to your Google Cloud Project Id."
         )
-    return project_id
 
 
 def project_name():
-    return "projects/" + project_id()
+    return f"projects/{project_id()}"
 
 
 if __name__ == "__main__":

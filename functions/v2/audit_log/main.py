@@ -32,15 +32,12 @@ def hello_auditlog(cloud_event):
         # Use the `in` operator to verify `subject` is present.
         print(f"Subject: {cloud_event['subject']}")
 
-    # Print out details from the `protoPayload`
-    # This field encapsulates a Cloud Audit Logging entry
-    # See https://cloud.google.com/logging/docs/audit#audit_log_entry_structure
-
-    payload = cloud_event.data.get("protoPayload")
-    if payload:
+    if payload := cloud_event.data.get("protoPayload"):
         print(f"API method: {payload.get('methodName')}")
         print(f"Resource name: {payload.get('resourceName')}")
-        print(f"Principal: {payload.get('authenticationInfo', dict()).get('principalEmail')}")
+        print(
+            f"Principal: {payload.get('authenticationInfo', {}).get('principalEmail')}"
+        )
 
 
 # [END functions_log_cloudevent]

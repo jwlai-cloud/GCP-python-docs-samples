@@ -24,7 +24,7 @@ def test_index() -> None:
     """
     client = main.app.test_client()
     success_counter = 0
-    for x in range(10):
+    for _ in range(10):
         r = client.get("/")
         if r.status_code == 200:
             success_counter = success_counter + 1

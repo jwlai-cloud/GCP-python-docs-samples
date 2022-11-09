@@ -104,22 +104,18 @@ def init_unix_connection_engine(
     cloud_sql_connection_name = creds["CLOUD_SQL_CONNECTION_NAME"]
 
     pool = sqlalchemy.create_engine(
-        # Equivalent URL:
-        # postgres+pg8000://<db_user>:<db_pass>@/<db_name>
-        #                         ?unix_sock=<socket_path>/<cloud_sql_instance_name>/.s.PGSQL.5432
         sqlalchemy.engine.url.URL.create(
             drivername="postgresql+pg8000",
-            username=db_user,  # e.g. "my-database-user"
-            password=db_pass,  # e.g. "my-database-password"
-            database=db_name,  # e.g. "my-database-name"
+            username=db_user,
+            password=db_pass,
+            database=db_name,
             query={
-                "unix_sock": "{}/{}/.s.PGSQL.5432".format(
-                    db_socket_dir, cloud_sql_connection_name  # e.g. "/cloudsql"
-                )  # i.e "<PROJECT-NAME>:<INSTANCE-REGION>:<INSTANCE-NAME>"
+                "unix_sock": f"{db_socket_dir}/{cloud_sql_connection_name}/.s.PGSQL.5432"
             },
         ),
         **db_config,
     )
+
     pool.dialect.description_encoding = None
     logger.info("Database engine initialised from unix conection")
 
@@ -157,13 +153,14 @@ def get_index_context() -> Dict:
             "ORDER BY time_cast DESC LIMIT 5"
         ).fetchall()
         # Convert the results into a list of dicts representing votes
-        for row in recent_votes:
-            votes.append(
-                {
-                    "candidate": row[0],
-                    "time_cast": row[1],
-                }
-            )
+        votes.extend(
+            {
+                "candidate": row[0],
+                "time_cast": row[1],
+            }
+            for row in recent_votes
+        )
+
         stmt = sqlalchemy.text(
             "SELECT COUNT(vote_id) FROM pet_votes WHERE candidate=:candidate"
         )

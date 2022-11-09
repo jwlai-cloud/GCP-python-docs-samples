@@ -50,14 +50,19 @@ def create_service_account(project_id, name, display_name):
     service = googleapiclient.discovery.build(
         'iam', 'v1', credentials=credentials)
 
-    my_service_account = service.projects().serviceAccounts().create(
-        name='projects/' + project_id,
-        body={
-            'accountId': name,
-            'serviceAccount': {
-                'displayName': display_name
-            }
-        }).execute()
+    my_service_account = (
+        service.projects()
+        .serviceAccounts()
+        .create(
+            name=f'projects/{project_id}',
+            body={
+                'accountId': name,
+                'serviceAccount': {'displayName': display_name},
+            },
+        )
+        .execute()
+    )
+
 
     print('Created service account: ' + my_service_account['email'])
     return my_service_account
@@ -75,8 +80,13 @@ def list_service_accounts(project_id):
     service = googleapiclient.discovery.build(
         'iam', 'v1', credentials=credentials)
 
-    service_accounts = service.projects().serviceAccounts().list(
-        name='projects/' + project_id).execute()
+    service_accounts = (
+        service.projects()
+        .serviceAccounts()
+        .list(name=f'projects/{project_id}')
+        .execute()
+    )
+
 
     for account in service_accounts['accounts']:
         print('Name: ' + account['name'])
@@ -98,7 +108,7 @@ def rename_service_account(email, new_display_name):
     service = googleapiclient.discovery.build(
         'iam', 'v1', credentials=credentials)
 
-    resource = 'projects/-/serviceAccounts/' + email
+    resource = f'projects/-/serviceAccounts/{email}'
 
     my_service_account = service.projects().serviceAccounts().get(
         name=resource).execute()
@@ -108,8 +118,10 @@ def rename_service_account(email, new_display_name):
     my_service_account = service.projects().serviceAccounts().update(
         name=resource, body=my_service_account).execute()
 
-    print('Updated display name for {} to: {}'.format(
-        my_service_account['email'], my_service_account['displayName']))
+    print(
+        f"Updated display name for {my_service_account['email']} to: {my_service_account['displayName']}"
+    )
+
     return my_service_account
 # [END iam_rename_service_account]
 
@@ -126,9 +138,11 @@ def disable_service_account(email):
         'iam', 'v1', credentials=credentials)
 
     service.projects().serviceAccounts().disable(
-        name='projects/-/serviceAccounts/' + email).execute()
+        name=f'projects/-/serviceAccounts/{email}'
+    ).execute()
 
-    print("Disabled service account :" + email)
+
+    print(f"Disabled service account :{email}")
 # [END iam_disable_service_account]
 
 
@@ -144,9 +158,11 @@ def enable_service_account(email):
         'iam', 'v1', credentials=credentials)
 
     service.projects().serviceAccounts().enable(
-        name='projects/-/serviceAccounts/' + email).execute()
+        name=f'projects/-/serviceAccounts/{email}'
+    ).execute()
 
-    print("Enabled service account :" + email)
+
+    print(f"Enabled service account :{email}")
 # [END iam_enable_service_account]
 
 
@@ -162,9 +178,11 @@ def delete_service_account(email):
         'iam', 'v1', credentials=credentials)
 
     service.projects().serviceAccounts().delete(
-        name='projects/-/serviceAccounts/' + email).execute()
+        name=f'projects/-/serviceAccounts/{email}'
+    ).execute()
 
-    print('Deleted service account: ' + email)
+
+    print(f'Deleted service account: {email}')
 # [END iam_delete_service_account]
 
 

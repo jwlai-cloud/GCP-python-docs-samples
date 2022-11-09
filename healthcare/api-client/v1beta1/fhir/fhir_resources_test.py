@@ -29,8 +29,8 @@ base_url = "https://healthcare.googleapis.com/v1beta1"
 project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
 service_account_json = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
 
-dataset_id = "test_dataset_{}".format(uuid.uuid4())
-fhir_store_id = "test_fhir_store-{}".format(uuid.uuid4())
+dataset_id = f"test_dataset_{uuid.uuid4()}"
+fhir_store_id = f"test_fhir_store-{uuid.uuid4()}"
 resource_type = "Patient"
 client = fhir_stores.get_client(service_account_json)
 
@@ -82,11 +82,13 @@ def test_dataset():
 
 @pytest.fixture(scope="module")
 def test_fhir_store():
-    fhir_store = fhir_stores.create_fhir_store(
-        service_account_json, project_id, cloud_region, dataset_id, fhir_store_id
+    yield fhir_stores.create_fhir_store(
+        service_account_json,
+        project_id,
+        cloud_region,
+        dataset_id,
+        fhir_store_id,
     )
-
-    yield fhir_store
 
     # Clean up
     fhir_stores.delete_fhir_store(

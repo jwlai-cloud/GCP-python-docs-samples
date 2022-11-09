@@ -53,11 +53,10 @@ def create_resource_from_file(
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # resource_file = 'Patient.json'  # replace with the FHIR resource file
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    fhir_store_path = "{}/datasets/{}/fhirStores/{}/fhir/{}".format(
-        url, dataset_id, fhir_store_id, resource_type
-    )
+    fhir_store_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/{resource_type}"
+
 
     # Sets required application/fhir+json header on the request
     headers = {"Content-Type": "application/fhir+json;charset=utf-8"}
@@ -70,7 +69,7 @@ def create_resource_from_file(
 
     response_resource = response.json()
 
-    print("Created FHIR resource with ID {}".format(response_resource["id"]))
+    print(f'Created FHIR resource with ID {response_resource["id"]}')
 
     return response
 
@@ -111,11 +110,12 @@ def create_patient(project_id, location, dataset_id, fhir_store_id):
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    fhir_store_path = "{}/datasets/{}/fhirStores/{}/fhir/Patient".format(
-        url, dataset_id, fhir_store_id
+    fhir_store_path = (
+        f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/Patient"
     )
+
 
     # Sets required application/fhir+json header on the request
     headers = {"Content-Type": "application/fhir+json;charset=utf-8"}
@@ -132,7 +132,7 @@ def create_patient(project_id, location, dataset_id, fhir_store_id):
 
     resource = response.json()
 
-    print("Created Patient resource with ID {}".format(resource["id"]))
+    print(f'Created Patient resource with ID {resource["id"]}')
 
     return response
 
@@ -180,11 +180,10 @@ def create_encounter(
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # fhir_store_id = 'my-fhir-store'  # replace with the FHIR store ID
     # patient_id = 'b682d-0e-4843-a4a9-78c9ac64'  # replace with the associated Patient resource's ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    fhir_store_path = "{}/datasets/{}/fhirStores/{}/fhir/Encounter".format(
-        url, dataset_id, fhir_store_id
-    )
+    fhir_store_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/Encounter"
+
 
     # Sets required application/fhir+json header on the request
     headers = {"Content-Type": "application/fhir+json;charset=utf-8"}
@@ -202,16 +201,17 @@ def create_encounter(
                 " concerned about this."
             }
         ],
-        "subject": {"reference": "Patient/{}".format(patient_id)},
+        "subject": {"reference": f"Patient/{patient_id}"},
         "resourceType": "Encounter",
     }
+
 
     response = session.post(fhir_store_path, headers=headers, json=body)
     response.raise_for_status()
 
     resource = response.json()
 
-    print("Created Encounter resource with ID {}".format(resource["id"]))
+    print(f'Created Encounter resource with ID {resource["id"]}')
 
     return response
 
@@ -263,11 +263,10 @@ def create_observation(
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # patient_id = 'b682d-0e-4843-a4a9-78c9ac64'  # replace with the associated Patient resource's ID
     # encounter_id = 'a7602f-ffba-470a-a5c1-103f993c6  # replace with the associated Encounter resource's ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    fhir_store_path = "{}/datasets/{}/fhirStores/{}/fhir/Observation".format(
-        url, dataset_id, fhir_store_id
-    )
+    fhir_store_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/Observation"
+
 
     # Sets required application/fhir+json header on the request
     headers = {"Content-Type": "application/fhir+json;charset=utf-8"}
@@ -284,18 +283,19 @@ def create_observation(
             ]
         },
         "status": "final",
-        "subject": {"reference": "Patient/{}".format(patient_id)},
+        "subject": {"reference": f"Patient/{patient_id}"},
         "effectiveDateTime": "2019-01-01T00:00:00+00:00",
         "valueQuantity": {"value": 80, "unit": "bpm"},
-        "context": {"reference": "Encounter/{}".format(encounter_id)},
+        "context": {"reference": f"Encounter/{encounter_id}"},
     }
+
 
     response = session.post(fhir_store_path, headers=headers, json=body)
     response.raise_for_status()
 
     resource = response.json()
 
-    print("Created Observation resource with ID {}".format(resource["id"]))
+    print(f'Created Observation resource with ID {resource["id"]}')
 
     return response
 
@@ -351,14 +351,13 @@ def delete_resource(
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # resource_type = 'Patient'  # replace with the FHIR resource type
     # resource_id = 'b682d-0e-4843-a4a9-78c9ac64'  # replace with the FHIR resource's ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    resource_path = "{}/datasets/{}/fhirStores/{}/fhir/{}/{}".format(
-        url, dataset_id, fhir_store_id, resource_type, resource_id
-    )
+    resource_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/{resource_type}/{resource_id}"
+
 
     response = session.delete(resource_path)
-    print("Deleted {} resource with ID {}.".format(resource_type, resource_id))
+    print(f"Deleted {resource_type} resource with ID {resource_id}.")
 
     return response
 
@@ -408,11 +407,10 @@ def get_resource(
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # resource_type = 'Patient'  # replace with the FHIR resource type
     # resource_id = 'b682d-0e-4843-a4a9-78c9ac64'  # replace with the FHIR resource's ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    resource_path = "{}/datasets/{}/fhirStores/{}/fhir/{}/{}".format(
-        url, dataset_id, fhir_store_id, resource_type, resource_id
-    )
+    resource_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/{resource_type}/{resource_id}"
+
 
     # Sets required application/fhir+json header on the request
     headers = {"Content-Type": "application/fhir+json;charset=utf-8"}
@@ -422,7 +420,7 @@ def get_resource(
 
     resource = response.json()
 
-    print("Got {} resource:".format(resource["resourceType"]))
+    print(f'Got {resource["resourceType"]} resource:')
     print(json.dumps(resource, indent=2))
 
     return resource
@@ -473,25 +471,23 @@ def list_resource_history(
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # resource_type = 'Patient'  # replace with the FHIR resource type
     # resource_id = 'b682d-0e-4843-a4a9-78c9ac64'  # replace with the FHIR resource's ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    resource_path = "{}/datasets/{}/fhirStores/{}/fhir/{}/{}".format(
-        url, dataset_id, fhir_store_id, resource_type, resource_id
-    )
+    resource_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/{resource_type}/{resource_id}"
+
 
     # Sets required application/fhir+json header on the request
     headers = {"Content-Type": "application/fhir+json;charset=utf-8"}
 
-    response = session.get(resource_path + "/_history", headers=headers)
+    response = session.get(f"{resource_path}/_history", headers=headers)
     response.raise_for_status()
 
     resource = response.json()
 
     print(
-        "History for {} resource:".format(
-            resource["entry"][0]["resource"]["resourceType"]
-        )
+        f'History for {resource["entry"][0]["resource"]["resourceType"]} resource:'
     )
+
     print(json.dumps(resource, indent=2))
 
     return resource
@@ -543,12 +539,11 @@ def get_resource_history(
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # resource_type = 'Patient'  # replace with the FHIR resource type
     # resource_id = 'b682d-0e-4843-a4a9-78c9ac64'  # replace with the FHIR resource's ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    resource_path = "{}/datasets/{}/fhirStores/{}/fhir/{}/{}".format(
-        url, dataset_id, fhir_store_id, resource_type, resource_id
-    )
-    resource_path += "/_history/{}".format(version_id)
+    resource_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/{resource_type}/{resource_id}"
+
+    resource_path += f"/_history/{version_id}"
 
     # Sets required application/fhir+json header on the request
     headers = {"Content-Type": "application/fhir+json;charset=utf-8"}
@@ -558,7 +553,7 @@ def get_resource_history(
 
     resource = response.json()
 
-    print("Got history for {} resource:".format(resource_type))
+    print(f"Got history for {resource_type} resource:")
     print(json.dumps(resource, indent=2))
 
     return resource
@@ -609,11 +604,10 @@ def delete_resource_purge(
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # resource_type = 'Patient'  # replace with the FHIR resource type
     # resource_id = 'b682d-0e-4843-a4a9-78c9ac64'  # replace with the FHIR resource's ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    resource_path = "{}/datasets/{}/fhirStores/{}/fhir/{}/{}".format(
-        url, dataset_id, fhir_store_id, resource_type, resource_id
-    )
+    resource_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/{resource_type}/{resource_id}"
+
     resource_path += "/$purge"
 
     # Sets required application/fhir+json header on the request
@@ -624,9 +618,9 @@ def delete_resource_purge(
 
     if response.status_code < 400:
         print(
-            "Deleted versions of {} resource "
-            "(excluding current version).".format(resource_type)
+            f"Deleted versions of {resource_type} resource (excluding current version)."
         )
+
 
     return response
 
@@ -676,11 +670,10 @@ def update_resource(
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # resource_type = 'Patient'  # replace with the FHIR resource type
     # resource_id = 'b682d-0e-4843-a4a9-78c9ac64'  # replace with the FHIR resource's ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    resource_path = "{}/datasets/{}/fhirStores/{}/fhir/{}/{}".format(
-        url, dataset_id, fhir_store_id, resource_type, resource_id
-    )
+    resource_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/{resource_type}/{resource_id}"
+
 
     # Sets required application/fhir+json header on the request
     headers = {"Content-Type": "application/fhir+json;charset=utf-8"}
@@ -696,7 +689,7 @@ def update_resource(
 
     resource = response.json()
 
-    print("Updated {} resource:".format(resource["resourceType"]))
+    print(f'Updated {resource["resourceType"]} resource:')
     print(json.dumps(resource, indent=2))
 
     return resource
@@ -747,11 +740,10 @@ def patch_resource(
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # resource_type = 'Patient'  # replace with the FHIR resource type
     # resource_id = 'b682d-0e-4843-a4a9-78c9ac64'  # replace with the FHIR resource's ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    resource_path = "{}/datasets/{}/fhirStores/{}/fhir/{}/{}".format(
-        url, dataset_id, fhir_store_id, resource_type, resource_id
-    )
+    resource_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/{resource_type}/{resource_id}"
+
 
     # Sets required application/json-patch+json header.
     # See https://tools.ietf.org/html/rfc6902 for more information.
@@ -768,7 +760,7 @@ def patch_resource(
 
     resource = response.json()
 
-    print("Patched {} resource:".format(resource["resourceType"]))
+    print(f'Patched {resource["resourceType"]} resource:')
     print(json.dumps(resource, indent=2))
 
     return resource
@@ -818,11 +810,10 @@ def search_resources_get(
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # resource_type = 'Patient'  # replace with the FHIR resource type
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    resource_path = "{}/datasets/{}/fhirStores/{}/fhir/{}".format(
-        url, dataset_id, fhir_store_id, resource_type
-    )
+    resource_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/{resource_type}"
+
 
     response = session.get(resource_path)
     response.raise_for_status()
@@ -830,10 +821,9 @@ def search_resources_get(
     resources = response.json()
 
     print(
-        "Using GET request, found a total of {} {} resources:".format(
-            resources["total"], resource_type
-        )
+        f'Using GET request, found a total of {resources["total"]} {resource_type} resources:'
     )
+
     print(json.dumps(resources, indent=2))
 
     return resources
@@ -879,13 +869,14 @@ def search_resources_post(project_id, location, dataset_id, fhir_store_id):
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    fhir_store_path = "{}/datasets/{}/fhirStores/{}/fhir".format(
-        url, dataset_id, fhir_store_id
+    fhir_store_path = (
+        f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir"
     )
 
-    resource_path = "{}/Patient/_search?family:exact=Smith".format(fhir_store_path)
+
+    resource_path = f"{fhir_store_path}/Patient/_search?family:exact=Smith"
 
     # Sets required application/fhir+json header on the request
     headers = {"Content-Type": "application/fhir+json;charset=utf-8"}
@@ -895,10 +886,9 @@ def search_resources_post(project_id, location, dataset_id, fhir_store_id):
 
     resources = response.json()
     print(
-        "Using POST request, found a total of {} Patient resources:".format(
-            resources["total"]
-        )
+        f'Using POST request, found a total of {resources["total"]} Patient resources:'
     )
+
 
     print(json.dumps(resources, indent=2))
 
@@ -948,11 +938,10 @@ def get_patient_everything(
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # resource_id = 'b682d-0e-4843-a4a9-78c9ac64'  # replace with the Patient resource's ID
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    resource_path = "{}/datasets/{}/fhirStores/{}/fhir/{}/{}".format(
-        url, dataset_id, fhir_store_id, "Patient", resource_id
-    )
+    resource_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/Patient/{resource_id}"
+
     resource_path += "/$everything"
 
     # Sets required application/fhir+json header on the request
@@ -1011,11 +1000,9 @@ def execute_bundle(
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # bundle = 'bundle.json'  # replace with the bundle file
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    resource_path = "{}/datasets/{}/fhirStores/{}/fhir".format(
-        url, dataset_id, fhir_store_id
-    )
+    resource_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir"
 
     headers = {"Content-Type": "application/fhir+json;charset=utf-8"}
 
@@ -1027,7 +1014,7 @@ def execute_bundle(
 
     resource = response.json()
 
-    print("Executed bundle from file: {}".format(bundle))
+    print(f"Executed bundle from file: {bundle}")
     print(json.dumps(resource, indent=2))
 
     return resource
@@ -1075,11 +1062,10 @@ def create_implementation_guide(
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # implementation_guide_definition_file = 'ImplementationGuide-hl7.fhir.us.core.json'  # replace with the ImplementationGuide resource file
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    fhir_store_path = "{}/datasets/{}/fhirStores/{}/fhir/ImplementationGuide".format(
-        url, dataset_id, fhir_store_id
-    )
+    fhir_store_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/ImplementationGuide"
+
 
     # Sets required application/fhir+json header on the request
     headers = {"Content-Type": "application/fhir+json;charset=utf-8"}
@@ -1094,7 +1080,7 @@ def create_implementation_guide(
 
     resource = response.json()
 
-    print("Created ImplementationGuide resource with ID {}".format(resource["id"]))
+    print(f'Created ImplementationGuide resource with ID {resource["id"]}')
 
     return response
 
@@ -1134,10 +1120,11 @@ def enable_implementation_guide(
     # implementation_guide_url =
     # 'http://hl7.org/fhir/us/core/ImplementationGuide/hl7.fhir.us.core'  #
     # replace with the 'url' property in the ImplementationGuide resource
-    fhir_store_parent = "projects/{}/locations/{}/datasets/{}".format(
-        project_id, location, dataset_id
+    fhir_store_parent = (
+        f"projects/{project_id}/locations/{location}/datasets/{dataset_id}"
     )
-    fhir_store_name = "{}/fhirStores/{}".format(fhir_store_parent, fhir_store_id)
+
+    fhir_store_name = f"{fhir_store_parent}/fhirStores/{fhir_store_id}"
 
     validation_config = {
         "validationConfig": {
@@ -1157,10 +1144,9 @@ def enable_implementation_guide(
 
     response = request.execute()
     print(
-        "Enabled ImplementationGuide with URL {} on FHIR store {}".format(
-            implementation_guide_url, fhir_store_id
-        )
+        f"Enabled ImplementationGuide with URL {implementation_guide_url} on FHIR store {fhir_store_id}"
     )
+
 
     return response
 
@@ -1207,11 +1193,10 @@ def create_structure_definition(
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # structure_definition_file = 'StructureDefinition-us-core-patient.json'  # replace with the StructureDefinition resource file
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    fhir_store_path = "{}/datasets/{}/fhirStores/{}/fhir/StructureDefinition".format(
-        url, dataset_id, fhir_store_id
-    )
+    fhir_store_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/StructureDefinition"
+
 
     # Sets required application/fhir+json header on the request
     headers = {"Content-Type": "application/fhir+json;charset=utf-8"}
@@ -1226,7 +1211,7 @@ def create_structure_definition(
 
     resource = response.json()
 
-    print("Created StructureDefinition resource with ID {}".format(resource["id"]))
+    print(f'Created StructureDefinition resource with ID {resource["id"]}')
 
     return response
 
@@ -1274,11 +1259,10 @@ def validate_resource(
     # dataset_id = 'my-dataset'  # replace with the parent dataset's ID
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # resource_type = 'Patient'  # replace with the FHIR resource type
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    resource_path = "{}/datasets/{}/fhirStores/{}/fhir/{}".format(
-        url, dataset_id, fhir_store_id, resource_type
-    )
+    resource_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/{resource_type}"
+
 
     resource_path += "/$validate"
 
@@ -1348,11 +1332,10 @@ def validate_resource_profile_url(
     # fhir_store_id = 'my-fhir-store' # replace with the FHIR store ID
     # resource_type = 'Patient'  # replace with the FHIR resource type
     # profile_url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient'  # replace with the profile URL
-    url = "{}/projects/{}/locations/{}".format(base_url, project_id, location)
+    url = f"{base_url}/projects/{project_id}/locations/{location}"
 
-    resource_path = "{}/datasets/{}/fhirStores/{}/fhir/{}".format(
-        url, dataset_id, fhir_store_id, resource_type
-    )
+    resource_path = f"{url}/datasets/{dataset_id}/fhirStores/{fhir_store_id}/fhir/{resource_type}"
+
 
     resource_path += "/$validate"
     params = {"profile": profile_url}

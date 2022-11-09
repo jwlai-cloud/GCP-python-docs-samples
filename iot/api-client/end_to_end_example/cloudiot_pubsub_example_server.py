@@ -61,10 +61,12 @@ class Server(object):
         credentials = service_account.Credentials.from_service_account_file(
             service_account_json).with_scopes(API_SCOPES)
         if not credentials:
-            sys.exit('Could not load service account credential '
-                     'from {}'.format(service_account_json))
+            sys.exit(
+                f'Could not load service account credential from {service_account_json}'
+            )
 
-        discovery_url = '{}?version={}'.format(DISCOVERY_API, API_VERSION)
+
+        discovery_url = f'{DISCOVERY_API}?version={API_VERSION}'
 
         self._service = discovery.build(
             SERVICE_NAME,
@@ -85,8 +87,7 @@ class Server(object):
                               data):
         """Push the data to the given device as configuration."""
         config_data = None
-        print('The device ({}) has a temperature '
-              'of: {}'.format(device_id, data['temperature']))
+        print(f"The device ({device_id}) has a temperature of: {data['temperature']}")
         if data['temperature'] < 0:
             # Turn off the fan.
             config_data = {'fan_on': False}
@@ -113,12 +114,8 @@ class Server(object):
                     config_data_json.encode('utf-8')).decode('ascii')
         }
 
-        device_name = ('projects/{}/locations/{}/registries/{}/'
-                       'devices/{}'.format(
-                           project_id,
-                           region,
-                           registry_id,
-                           device_id))
+        device_name = f'projects/{project_id}/locations/{region}/registries/{registry_id}/devices/{device_id}'
+
 
         request = self._service.projects().locations().registries().devices(
         ).modifyCloudToDeviceConfig(name=device_name, body=body)
@@ -133,7 +130,7 @@ class Server(object):
             # If the server responds with a HtppError, log it here, but
             # continue so that the message does not stay NACK'ed on the
             # pubsub channel.
-            print('Error executing ModifyCloudToDeviceConfig: {}'.format(e))
+            print(f'Error executing ModifyCloudToDeviceConfig: {e}')
         finally:
             self._update_config_mutex.release()
 

@@ -43,8 +43,8 @@ def test_process_offensive_image(
     main.blur_offensive_images(data, None)
 
     out, _ = capsys.readouterr()
-    assert 'Analyzing %s.' % filename in out
-    assert 'The image %s was detected as inappropriate.' % filename in out
+    assert f'Analyzing {filename}.' in out
+    assert f'The image {filename} was detected as inappropriate.' in out
     assert main.__blur_image.called
 
 
@@ -72,8 +72,8 @@ def test_process_safe_image(
 
     out, _ = capsys.readouterr()
 
-    assert 'Analyzing %s.' % filename in out
-    assert 'The image %s was detected as OK.' % filename in out
+    assert f'Analyzing {filename}.' in out
+    assert f'The image {filename} was detected as OK.' in out
     assert __blur_image.called is False
 
 
@@ -82,7 +82,7 @@ def test_process_safe_image(
 @patch('main.storage_client')
 def test_blur_image(storage_client, image_mock, os_mock, capsys):
     filename = str(uuid.uuid4())
-    blur_bucket = 'blurred-bucket-' + str(uuid.uuid4())
+    blur_bucket = f'blurred-bucket-{str(uuid.uuid4())}'
 
     os_mock.remove = MagicMock()
     os_mock.path = MagicMock()

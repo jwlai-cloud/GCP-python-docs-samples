@@ -46,7 +46,7 @@ def generate_job_with_required_fields(company_name):
         'description': description,
         'company_name': company_name
     }
-    print('Job generated: %s' % job)
+    print(f'Job generated: {job}')
     return job
 # [END basic_job]
 
@@ -57,7 +57,7 @@ def create_job(client_service, job_to_be_created):
         request = {'job': job_to_be_created}
         job_created = client_service.projects().jobs().create(
             parent=parent, body=request).execute()
-        print('Job created: %s' % job_created)
+        print(f'Job created: {job_created}')
         return job_created
     except Error as e:
         print('Got exception while creating job')
@@ -70,7 +70,7 @@ def get_job(client_service, job_name):
     try:
         job_existed = client_service.projects().jobs().get(
             name=job_name).execute()
-        print('Job existed: %s' % job_existed)
+        print(f'Job existed: {job_existed}')
         return job_existed
     except Error as e:
         print('Got exception while getting job')
@@ -84,7 +84,7 @@ def update_job(client_service, job_name, job_to_be_updated):
         request = {'job': job_to_be_updated}
         job_updated = client_service.projects().jobs().patch(
             name=job_name, body=request).execute()
-        print('Job updated: %s' % job_updated)
+        print(f'Job updated: {job_updated}')
         return job_updated
     except Error as e:
         print('Got exception while updating job')
@@ -99,7 +99,7 @@ def update_job_with_field_mask(client_service, job_name, job_to_be_updated,
         request = {'job': job_to_be_updated, 'update_mask': field_mask}
         job_updated = client_service.projects().jobs().patch(
             name=job_name, body=request).execute()
-        print('Job updated: %s' % job_updated)
+        print(f'Job updated: {job_updated}')
         return job_updated
     except Error as e:
         print('Got exception while updating job with field mask')

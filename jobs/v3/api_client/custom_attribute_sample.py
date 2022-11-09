@@ -59,7 +59,7 @@ def generate_job_with_custom_attributes(company_name):
         'description': description,
         'custom_attributes': custom_attributes
     }
-    print('Job generated: %s' % job)
+    print(f'Job generated: {job}')
     return job
 # [END custom_attribute_job]
 

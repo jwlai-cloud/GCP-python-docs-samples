@@ -44,11 +44,8 @@ def create_resource_attribute_definition(
     # dataset_id = 'my-dataset'  # replace with the FHIR store's parent dataset ID
     # consent_store_id = 'my-consent-store'  # replace with the consent store's ID
     # resource_attribute_definition_id = 'requester_identity'  # replace with the attribute definition ID
-    consent_store_parent = (
-        "projects/{}/locations/{}/datasets/{}/consentStores/{}".format(
-            project_id, location, dataset_id, consent_store_id
-        )
-    )
+    consent_store_parent = f"projects/{project_id}/locations/{location}/datasets/{dataset_id}/consentStores/{consent_store_id}"
+
 
     body = {
         "description": "whether the data is identifiable",
@@ -70,7 +67,7 @@ def create_resource_attribute_definition(
     )
 
     response = request.execute()
-    print("Created RESOURCE attribute definition: {}".format(response))
+    print(f"Created RESOURCE attribute definition: {response}")
 
     return response
 
@@ -106,11 +103,8 @@ def create_request_attribute_definition(
     # dataset_id = 'my-dataset'  # replace with the FHIR store's parent dataset ID
     # consent_store_id = 'my-consent-store'  # replace with the consent store's ID
     # request_attribute_definition_id = 'requester_identity'  # replace with the request attribute definition ID
-    consent_store_parent = (
-        "projects/{}/locations/{}/datasets/{}/consentStores/{}".format(
-            project_id, location, dataset_id, consent_store_id
-        )
-    )
+    consent_store_parent = f"projects/{project_id}/locations/{location}/datasets/{dataset_id}/consentStores/{consent_store_id}"
+
 
     body = {
         "description": "what groups are consented for access",
@@ -136,7 +130,7 @@ def create_request_attribute_definition(
     )
 
     response = request.execute()
-    print("Created REQUEST attribute definition: {}".format(response))
+    print(f"Created REQUEST attribute definition: {response}")
 
     return response
 
@@ -170,14 +164,10 @@ def get_attribute_definition(
     # dataset_id = 'my-dataset'  # replace with the consent store's parent dataset ID
     # consent_store_id = 'my-consent-store'  # replace with the consent store's ID
     # attribute_definition_id = 'data_identifiable'  # replace with the attribute definition ID
-    consent_store_parent = (
-        "projects/{}/locations/{}/datasets/{}/consentStores/{}".format(
-            project_id, location, dataset_id, consent_store_id
-        )
-    )
-    attribute_definition_name = "{}/attributeDefinitions/{}".format(
-        consent_store_parent, attribute_definition_id
-    )
+    consent_store_parent = f"projects/{project_id}/locations/{location}/datasets/{dataset_id}/consentStores/{consent_store_id}"
+
+    attribute_definition_name = f"{consent_store_parent}/attributeDefinitions/{attribute_definition_id}"
+
 
     request = (
         client.projects()
@@ -189,7 +179,7 @@ def get_attribute_definition(
     )
 
     response = request.execute()
-    print("Got attribute definition: {}".format(attribute_definition_id))
+    print(f"Got attribute definition: {attribute_definition_id}")
     return response
 
 
@@ -215,11 +205,8 @@ def list_attribute_definitions(project_id: str, location: str, dataset_id: str, 
     # location = 'us-central1'  # replace with the parent dataset's location
     # dataset_id = 'my-dataset'  # replace with the consent store's parent dataset ID
     # consent_store_id = 'my-consent-store'  # replace with the consent store ID
-    attribute_definition_parent = (
-        "projects/{}/locations/{}/datasets/{}/consentStores/{}".format(
-            project_id, location, dataset_id, consent_store_id
-        )
-    )
+    attribute_definition_parent = f"projects/{project_id}/locations/{location}/datasets/{dataset_id}/consentStores/{consent_store_id}"
+
 
     attribute_definitions = (
         client.projects()
@@ -269,14 +256,10 @@ def patch_attribute_definition(
     # consent_store_id = 'my-consent-store'  # replace with the consent store's ID
     # attribute_definition_id = 'requester_identity'  # replace with the attribute definition ID
     # description = 'whether the data is identifiable'  # replace with a description of the attribute
-    attribute_definition_parent = (
-        "projects/{}/locations/{}/datasets/{}/consentStores/{}".format(
-            project_id, location, dataset_id, consent_store_id
-        )
-    )
-    attribute_definition_name = "{}/attributeDefinitions/{}".format(
-        attribute_definition_parent, attribute_definition_id
-    )
+    attribute_definition_parent = f"projects/{project_id}/locations/{location}/datasets/{dataset_id}/consentStores/{consent_store_id}"
+
+    attribute_definition_name = f"{attribute_definition_parent}/attributeDefinitions/{attribute_definition_id}"
+
 
     # Updates
     patch = {"description": description}
@@ -292,10 +275,9 @@ def patch_attribute_definition(
 
     response = request.execute()
     print(
-        "Patched attribute definition {} with new description: {}".format(
-            attribute_definition_id, description
-        )
+        f"Patched attribute definition {attribute_definition_id} with new description: {description}"
     )
+
 
     return response
 
@@ -329,14 +311,10 @@ def delete_attribute_definition(
     # dataset_id = 'my-dataset'  # replace with the consent store's parent dataset ID
     # consent_store_id = 'my-consent-store'  # replace with the consent store's ID
     # attribute_definition_id = 'data_identifiable'  # replace with the attribute definition ID
-    consent_store_parent = (
-        "projects/{}/locations/{}/datasets/{}/consentStores/{}".format(
-            project_id, location, dataset_id, consent_store_id
-        )
-    )
-    attribute_definition_name = "{}/attributeDefinitions/{}".format(
-        consent_store_parent, attribute_definition_id
-    )
+    consent_store_parent = f"projects/{project_id}/locations/{location}/datasets/{dataset_id}/consentStores/{consent_store_id}"
+
+    attribute_definition_name = f"{consent_store_parent}/attributeDefinitions/{attribute_definition_id}"
+
 
     request = (
         client.projects()
@@ -348,7 +326,7 @@ def delete_attribute_definition(
     )
 
     response = request.execute()
-    print("Deleted attribute definition: {}".format(attribute_definition_id))
+    print(f"Deleted attribute definition: {attribute_definition_id}")
     return response
 
 

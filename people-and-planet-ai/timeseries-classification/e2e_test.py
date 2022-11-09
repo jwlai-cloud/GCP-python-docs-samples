@@ -30,11 +30,11 @@ import requests
 dataflow = build("dataflow", "v1b3")
 
 
-PYTHON_VERSION = "".join(platform.python_version_tuple()[0:2])
+PYTHON_VERSION = "".join(platform.python_version_tuple()[:2])
 
 NAME = f"ppai/timeseries-classification-py{PYTHON_VERSION}"
 
-UUID = uuid.uuid4().hex[0:6]
+UUID = uuid.uuid4().hex[:6]
 PROJECT = os.environ["GOOGLE_CLOUD_PROJECT"]
 REGION = "us-central1"
 

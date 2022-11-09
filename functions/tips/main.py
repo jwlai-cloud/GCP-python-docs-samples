@@ -82,8 +82,7 @@ def scope_demo(request):
         <http://flask.pocoo.org/docs/1.0/api/#flask.Flask.make_response>.
     """
     function_var = light_computation()
-    return 'Per instance: {}, per function: {}'.format(
-        instance_var, function_var)
+    return f'Per instance: {instance_var}, per function: {function_var}'
 # [END run_tips_global_scope]
 # [END cloudrun_tips_global_scope]
 
@@ -115,7 +114,7 @@ def lazy_globals(request):
     if not lazy_global:
         lazy_global = function_specific_computation()
 
-    return 'Lazy: {}, non-lazy: {}.'.format(lazy_global, non_lazy_global)
+    return f'Lazy: {lazy_global}, non-lazy: {non_lazy_global}.'
 # [END run_tips_global_lazy]
 # [END cloudrun_tips_global_lazy]
 # [END functions_tips_lazy_globals]
@@ -201,11 +200,11 @@ def avoid_infinite_retries(data, context):
     # Ignore events that are too old
     max_age_ms = 10000
     if event_age_ms > max_age_ms:
-        print('Dropped {} (age {}ms)'.format(context.event_id, event_age_ms))
+        print(f'Dropped {context.event_id} (age {event_age_ms}ms)')
         return 'Timeout'
 
     # Do what the function is supposed to do
-    print('Processed {} (age {}ms)'.format(context.event_id, event_age_ms))
+    print(f'Processed {context.event_id} (age {event_age_ms}ms)')
     return  # To retry the execution, raise an exception here
 # [END functions_tips_infinite_retries]
 
@@ -233,6 +232,4 @@ def retry_or_not(data, context):
         error_client.report_exception()
         if try_again:
             raise  # Raise the exception and try again
-        else:
-            pass   # Swallow the exception and don't retry
 # [END functions_tips_retry]

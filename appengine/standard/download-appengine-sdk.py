@@ -52,13 +52,9 @@ def get_gae_versions():
     # URL.
     versions_and_urls = []
     for release in releases:
-        match = PYTHON_RELEASE_RE.match(release['name'])
-
-        if not match:
-            continue
-
-        versions_and_urls.append(
-            ([int(x) for x in match.groups()], release['mediaLink']))
+        if match := PYTHON_RELEASE_RE.match(release['name']):
+            versions_and_urls.append(
+                ([int(x) for x in match.groups()], release['mediaLink']))
 
     return sorted(versions_and_urls, key=lambda x: x[0])
 
@@ -129,25 +125,22 @@ def download_command(destination):
 
     for version in latest_two_versions:
         if is_existing_up_to_date(destination, version[0]):
-            print(
-                'App Engine SDK already exists and is up to date '
-                'at {}.'.format(destination))
+            print(f'App Engine SDK already exists and is up to date at {destination}.')
             return
 
         try:
-            print('Downloading App Engine SDK {}'.format(
-                '.'.join([str(x) for x in version[0]])))
+            print(f"Downloading App Engine SDK {'.'.join([str(x) for x in version[0]])}")
             zip = download_sdk(version[1])
             version_number = version[0]
             break
         except Exception as e:
-            print('Failed to download: {}'.format(e))
+            print(f'Failed to download: {e}')
             continue
 
     if not zip:
         return
 
-    print('Extracting SDK to {}'.format(destination))
+    print(f'Extracting SDK to {destination}')
 
     extract_zip(zip, destination)
     fixup_version(destination, version_number)

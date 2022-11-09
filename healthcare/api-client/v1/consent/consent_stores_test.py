@@ -29,8 +29,8 @@ import consent_stores  # noqa
 location = "us-central1"
 project_id = os.environ["GOOGLE_CLOUD_PROJECT"]
 
-dataset_id = "test_dataset-{}".format(uuid.uuid4())
-consent_store_id = "test_consent_store_{}".format(uuid.uuid4())
+dataset_id = f"test_dataset-{uuid.uuid4()}"
+consent_store_id = f"test_consent_store_{uuid.uuid4()}"
 
 default_consent_ttl = "86400s"
 
@@ -106,7 +106,7 @@ def test_consent_store():
             # The API returns 403 when the dataset doesn't exist, so
             # if we try to delete a consent store when the parent dataset
             # doesn't exist, the server will return a 403.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print(
                     "Got exception {} while deleting consent store".format(
                         err.resp.status
@@ -134,7 +134,7 @@ def crud_consent_store_id():
             # The API returns 403 when the dataset doesn't exist, so
             # if we try to delete a consent store when the parent dataset
             # doesn't exist, the server will return a 403.
-            if err.resp.status == 404 or err.resp.status == 403:
+            if err.resp.status in [404, 403]:
                 print(
                     "Got exception {} while deleting consent store".format(
                         err.resp.status

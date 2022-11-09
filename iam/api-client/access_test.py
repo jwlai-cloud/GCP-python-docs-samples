@@ -40,8 +40,8 @@ def test_member():
     # section to create service account to test policy updates.
     # we use the first portion of uuid4 because full version is too long.
     name = "python-test-" + str(uuid.uuid4()).split('-')[0]
-    email = name + "@" + GCLOUD_PROJECT + ".iam.gserviceaccount.com"
-    member = "serviceAccount:" + email
+    email = f"{name}@{GCLOUD_PROJECT}.iam.gserviceaccount.com"
+    member = f"serviceAccount:{email}"
     service_accounts.create_service_account(
         GCLOUD_PROJECT, name, "Py Test Account"
     )

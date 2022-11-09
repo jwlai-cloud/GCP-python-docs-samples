@@ -53,8 +53,7 @@ def main():
     # Create the Stackdriver stats exporter and start exporting metrics in the
     # background, once every 60 seconds by default.
     exporter = stats_exporter.new_stats_exporter()
-    print('Exporting stats to project "{}"'
-          .format(exporter.options.project_id))
+    print(f'Exporting stats to project "{exporter.options.project_id}"')
 
     # Register exporter to the view manager.
     stats.stats.view_manager.register_exporter(exporter)
@@ -67,7 +66,7 @@ def main():
         mmap.measure_float_put(LATENCY_MS, ms)
         mmap.record()
 
-        print("Fake latency recorded ({}: {})".format(num, ms))
+        print(f"Fake latency recorded ({num}: {ms})")
 
     # Keep the thread alive long enough for the exporter to export at least
     # once.

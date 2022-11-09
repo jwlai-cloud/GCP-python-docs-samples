@@ -37,7 +37,7 @@ def search_for_alerts(client_service, company_name):
         'request_metadata': request_metadata,
     }
     if company_name is not None:
-        request.update({'job_query': {'company_names': [company_name]}})
+        request['job_query'] = {'company_names': [company_name]}
     response = client_service.projects().jobs().searchForAlert(
         parent=parent, body=request).execute()
     print(response)
